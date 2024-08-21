@@ -9,8 +9,8 @@ class ValidarRequest:
     def __init__(self, req: Dict[str, any] = None) -> None:
         self.req = req
 
-    def __call__(self, func: Callable, *args, **kwargs) -> Tuple[Dict[str, str], int] | Callable:
-        def valida_request(f=None):
+    def __call__(self, func: Callable) -> Tuple[Dict[str, str], int] | Callable:
+        def valida_request(f=None, *args, **kwargs):
             conteudoRequest = {
                 'json': request.get_json(),
                 'args': request.args
