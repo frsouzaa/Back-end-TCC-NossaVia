@@ -3,6 +3,7 @@ from ..decorators.validar_request import ValidarRequest
 from ..db.database import Usuario
 from flask import request
 from psycopg2.errors import UniqueViolation
+from ..utils.senha import criptografar
 
 
 class Cadastro:
@@ -19,12 +20,12 @@ class Cadastro:
             "data_nascimento": {"type": "string", "empty": False, "required": True},
         }
     )
-    def post(self, db_session) -> Tuple[Dict[str, str], int]:
-        request_json = request.get_json()
+    def post(self, db_session) -> Tuple[str, int]:
+        request_json: Dict[str, str] = request.get_json()
         usuario: Usuario = Usuario(
             request_json["nome"],
             request_json["email"],
-            request_json["senha"],
+            criptografar(request_json["senha"]),
             request_json["endereco"],
             request_json["numero_endereco"],
             request_json["complemento_endereco"],
