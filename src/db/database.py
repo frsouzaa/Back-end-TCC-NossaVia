@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, DateTime, String, Integer, func, create_engine
+from sqlalchemy import Column, DateTime, String, func, create_engine, Boolean, BigInteger
 from sqlalchemy.orm import scoped_session, sessionmaker
 import os
 from dotenv import load_dotenv
@@ -18,22 +18,39 @@ metadata = Base.metadata
 class Usuario(Base):
     __tablename__ = "usuario"
 
-    id: int = Column(Integer, primary_key=True)
+    id: int = Column(BigInteger, primary_key=True)
+    criacao: str = Column(DateTime, default=func.now(), nullable=False)
+    modificacao: str = Column(DateTime, default=func.now(), nullable=False)
+    delete: bool = Column(Boolean, default=False, nullable=False)
+
     nome: str = Column(String(200), nullable=False)
     email: str = Column(String(200), unique=True, nullable=False)
     senha: str = Column(String(200), nullable=False)
     endereco: str = Column(String(200), nullable=False)
+    numero_endereco: str = Column(String(200), nullable=False)
+    complemento_endereco: str = Column(String(200), nullable=False)
     cep: str = Column(String(20), nullable=False)
-    nascimento: str = Column(DateTime, nullable=False)
-    pontucao: int = Column(Integer, nullable=False)
-    create_at: str = Column(DateTime, default=func.now(), nullable=False)
+    data_nascimento: str = Column(DateTime, nullable=False)
+    pontucao: int = Column(BigInteger, default=0, nullable=False)
 
-    def __init__(self, nome, email, senha, endereco, cep, nascimento, pontucao):
+    def __init__(
+        self,
+        nome: str,
+        email: str,
+        senha: str,
+        endereco: str,
+        numero_endereco: str,
+        complemento_endereco: str,
+        cep: str,
+        data_nascimento: str,
+        pontucao: int,
+    ):
         self.nome = nome
         self.email = email
         self.senha = senha
-        self.senha = senha
         self.endereco = endereco
+        self.numero_endereco = numero_endereco
+        self.complemento_endereco = complemento_endereco
         self.cep = cep
-        self.nascimento = nascimento
+        self.data_nascimento = data_nascimento
         self.pontucao = pontucao

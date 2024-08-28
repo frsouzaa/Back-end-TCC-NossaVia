@@ -16,7 +16,7 @@ class App():
             self.app.add_url_rule(view.rota, view_func=view.as_view(view.name))
 
     def run_App(self) -> None:
-        self.app.run(host="0.0.0.0", port="80", debug=False)
+        self.app.run(host="0.0.0.0", port="8000", debug=False)
 
 
 if __name__ == "__main__":
