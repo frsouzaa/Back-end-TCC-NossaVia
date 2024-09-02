@@ -15,7 +15,7 @@ class ValidarToken:
                 return "Está faltando o token", 401
             try:
                 jwt.decode(token, getenv("JWT_KEY"), algorithms=["HS256"])
-            except:
+            except BaseException:
                 return "Token inválido", 401
             if f is not None:
                 return func(f, *args, **kwargs)
