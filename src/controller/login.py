@@ -3,6 +3,7 @@ from ..decorators.validar_request import ValidarRequest
 from ..db.database import Usuario
 from flask import jsonify, request
 from ..utils.senha import descriptografar
+from ..utils.jwt import gerar as gerar_jwt
 
 
 class Login:
@@ -20,4 +21,4 @@ class Login:
         ).first()
         if not res or not descriptografar(request_json["senha"], res.senha):
             return "usuário ou senha incorretos", 401
-        return jsonify({"token": ""}), 200
+        return jsonify({"token": gerar_jwt({"id": res.id})}), 200
