@@ -2,6 +2,7 @@ from typing import List
 from .login import Login
 from .cadastro import Cadastro
 from .denuncia import Denuncia
+from .versao import Versao
 
 
 class View_List():
@@ -11,5 +12,6 @@ class View_List():
         self.list = [
             Login(),
             Cadastro(),
-            Denuncia()
+            Denuncia(),
+            Versao()
         ]
