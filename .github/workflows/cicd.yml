@@ -48,6 +48,9 @@ jobs:
           build-args: |
             DB_URI=${{ secrets.DB_URI }}
             JWT_KEY=${{ secrets.JWT_KEY }}
+            AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING }}
+            AZURE_BLOB_CONTAINER=${{ secrets.AZURE_BLOB_CONTAINER }}
+            AZURE_BLOB_URL=${{ secrets.AZURE_BLOB_URL }}
   azure:
     runs-on: ubuntu-latest
     needs: docker
