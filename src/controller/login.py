@@ -17,8 +17,8 @@ class Login:
     def post(self) -> Tuple[Dict[str, str] | str, int]:
         request_json: Dict[str, str] = request.get_json()
         res = Usuario.query.filter(
-            Usuario.email == request_json["email"],
+            Usuario.email == request_json["email"], Usuario.delete == False
         ).first()
         if not res or not descriptografar(request_json["senha"], res.senha):
             return "usuário ou senha incorretos", 401
-        return jsonify({"token": gerar_jwt({"id": res.id})}), 200
+        return jsonify({"token": gerar_jwt({"id": str(res.id)})}), 200
