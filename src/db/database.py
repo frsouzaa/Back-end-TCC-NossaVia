@@ -33,7 +33,7 @@ metadata = Base.metadata
 
 @dataclass
 class Usuario(Base):
-    __tablename__ = "usuario"
+    __tablename__: str = "usuario"
 
     id: int = Column(BigInteger, primary_key=True)
     criacao: str = Column(DateTime, default=func.now(), nullable=False)
@@ -61,7 +61,7 @@ class Usuario(Base):
         cep: str,
         data_nascimento: str,
         pontucao: int,
-    ):
+    ) -> None:
         self.nome = nome
         self.email = email
         self.senha = senha
@@ -85,7 +85,7 @@ class Categoria(enum.Enum):
 
 @dataclass
 class Denuncia(Base):
-    __tablename__ = "denuncia"
+    __tablename__: str = "denuncia"
 
     id: int = Column(BigInteger, primary_key=True)
     criacao: str = Column(DateTime, default=func.now(), nullable=False)
@@ -121,7 +121,7 @@ class Denuncia(Base):
         fotos: str,
         qtd_curtidas: int,
         usuario_id: int,
-    ):
+    ) -> None:
         self.titulo = titulo
         self.descricao = descricao
         self.categoria = categoria
