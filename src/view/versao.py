@@ -12,4 +12,4 @@ class Versao(FlaskView):
     def dispatch_request(self) -> Response:
         with open('image.json', 'r') as file:
             image = json.load(file)
-        return image.get("tag"), 200
+        return f"A aplicação está rodando na versão {image.get("tag")}", 200

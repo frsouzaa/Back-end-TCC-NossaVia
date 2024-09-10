@@ -28,17 +28,17 @@ class Usuario:
         try:
             db_session.add(usuario)
             db_session.commit()
-            return "criado", 201
+            return {"msg": "criado"}, 201
         except Exception as e:
             if isinstance(e.orig, UniqueViolation):
-                return "email ja cadastrado", 409
+                return {"msg": "email ja cadastrado"}, 409
             if isinstance(e.orig, InvalidTextRepresentation):
-                return "categoria invalida", 409
-            return "ocorreu um erro desconhecido", 520
+                return {"msg": "categoria invalida"}, 409
+            return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def get(self, id):
         if id != request.token_id:
-            return "Não autorizado", 401
+            return {"msg": "Não autorizado"}, 401
         try:
             usuario = (
                 db_session.query(UsuarioModel)
@@ -59,13 +59,13 @@ class Usuario:
                 "pontucao": usuario.pontucao,
             }, 200
         except NoResultFound:
-            return "usuario nao encontrado", 404
+            return {"msg": "usuario nao encontrado"}, 404
         except:
-            return "ocorreu um erro desconhecido", 520
+            return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def put(self, id):
         if id != request.token_id:
-            return "Não autorizado", 401
+            return {"msg": "Não autorizado"}, 401
         try:
             usuario = (
                 db_session.query(UsuarioModel)
@@ -93,15 +93,15 @@ class Usuario:
                 usuario.telefone = request_json["telefone"]
             db_session.add(usuario)
             db_session.commit()
-            return "atualizado", 200
+            return {"msg": "atualizado"}, 200
         except NoResultFound:
-            return "usuario nao encontrado", 404
+            return {"msg": "usuario nao encontrado"}, 404
         except:
-            return "ocorreu um erro desconhecido", 520
+            return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def delete(self, id):
         if id != request.token_id:
-            return "Não autorizado", 401
+            return {"msg": "Não autorizado"}, 401
         try:
             usuario = (
                 db_session.query(UsuarioModel)
@@ -111,8 +111,8 @@ class Usuario:
             usuario.delete = True
             db_session.add(usuario)
             db_session.commit()
-            return "deletado", 200
+            return {"msg": "deletado"}, 200
         except NoResultFound:
-            return "usuario nao encontrado", 404
+            return {"msg": "usuario nao encontrado"}, 404
         except:
-            return "ocorreu um erro desconhecido", 520
+            return {"msg": "ocorreu um erro desconhecido"}, 520

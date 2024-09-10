@@ -62,16 +62,16 @@ class Denuncia:
             for foto in fotos:
                 upload_blob(foto["base64"], foto["nome"])
         except Exception as e:
-            return "ocorreu um erro desconhecido", 520
+            return {"msg": "ocorreu um erro desconhecido"}, 520
         try:
             db_session.add(denuncia)
             db_session.commit()
         except Exception as e:
             if isinstance(e.orig, InvalidTextRepresentation):
-                return "categoria invalida", 409
+                return {"msg": "categoria invalida"}, 409
             if isinstance(e.orig, InvalidDatetimeFormat):
-                return "data invalida", 409
+                return {"msg": "data invalida"}, 409
             if isinstance(e.orig, ForeignKeyViolation):
-                return "usuario inexistente", 409
-            return "ocorreu um erro desconhecido", 520
-        return "criado", 201
+                return {"msg": "usuario inexistente"}, 409
+            return {"msg": "ocorreu um erro desconhecido"}, 520
+        return {"msg": "criado"}, 201

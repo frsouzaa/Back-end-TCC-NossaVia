@@ -15,17 +15,13 @@ class Usuario(FlaskView):
     def dispatch_request(self) -> Response:
         if request.method == "POST":
             return self.post()
+        if not request.args.get("id"):
+            return {"msg": "id nao informado"}, 400
         if request.method == "GET":
-            if not request.args.get("id"):
-                return "id nao informado", 400
             return self.get(request.args.get("id"))
         if request.method == "PUT":
-            if not request.args.get("id"):
-                return "id nao informado", 400
             return self.put(request.args.get("id"))
         if request.method == "DELETE":
-            if not request.args.get("id"):
-                return "id nao informado", 400
             return self.delete(request.args.get("id"))
 
     @ValidarRequest(
@@ -35,7 +31,11 @@ class Usuario(FlaskView):
             "senha": {"type": "string", "empty": False, "required": True},
             "endereco": {"type": "string", "empty": False, "required": True},
             "numero_endereco": {"type": "string", "empty": True, "required": False},
-            "complemento_endereco": {"type": "string", "empty": True, "required": False},
+            "complemento_endereco": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+            },
             "cep": {"type": "string", "empty": False, "required": True},
             "data_nascimento": {"type": "string", "empty": False, "required": True},
             "sexo": {"type": "string", "empty": False, "required": True},
@@ -55,7 +55,11 @@ class Usuario(FlaskView):
             "senha": {"type": "string", "empty": False, "required": False},
             "endereco": {"type": "string", "empty": False, "required": False},
             "numero_endereco": {"type": "string", "empty": True, "required": False},
-            "complemento_endereco": {"type": "string", "empty": True, "required": False},
+            "complemento_endereco": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+            },
             "cep": {"type": "string", "empty": False, "required": False},
             "data_nascimento": {"type": "string", "empty": False, "required": False},
             "sexo": {"type": "string", "empty": False, "required": False},
@@ -65,7 +69,7 @@ class Usuario(FlaskView):
     @ValidarToken()
     def put(self, id: int) -> Tuple[Dict[str, str], int]:
         return UsuarioController().put(id)
-    
+
     @ValidarToken()
     def delete(self, id: int) -> Tuple[Dict[str, str], int]:
         return UsuarioController().delete(id)
