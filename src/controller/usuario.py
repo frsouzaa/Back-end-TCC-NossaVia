@@ -1,8 +1,8 @@
 from typing import Tuple, Dict
-from ..decorators.validar_request import ValidarRequest
 from ..db.database import Usuario as UsuarioModel
 from flask import request
 from psycopg2.errors import UniqueViolation
+from psycopg2.errors import InvalidTextRepresentation
 from ..utils.senha import criptografar
 from ..db.database import db_session
 from sqlalchemy.orm.exc import NoResultFound
@@ -21,6 +21,8 @@ class Usuario:
             request_json["complemento_endereco"],
             request_json["cep"],
             request_json["data_nascimento"],
+            request_json["sexo"],
+            request_json["telefone"],
             0,
         )
         try:
@@ -30,6 +32,8 @@ class Usuario:
         except Exception as e:
             if isinstance(e.orig, UniqueViolation):
                 return "email ja cadastrado", 409
+            if isinstance(e.orig, InvalidTextRepresentation):
+                return "categoria invalida", 409
             return "ocorreu um erro desconhecido", 520
 
     def get(self, id):
@@ -50,6 +54,8 @@ class Usuario:
                 "complemento_endereco": usuario.complemento_endereco,
                 "cep": usuario.cep,
                 "data_nascimento": usuario.data_nascimento,
+                "sexo": usuario.sexo,
+                "telefone": usuario.telefone,
                 "pontucao": usuario.pontucao,
             }, 200
         except NoResultFound:
@@ -81,6 +87,10 @@ class Usuario:
                 usuario.cep = request_json["cep"]
             if "data_nascimento" in request_json:
                 usuario.data_nascimento = request_json["data_nascimento"]
+            if "sexo" in request_json:
+                usuario.sexo = request_json["sexo"]
+            if "telefone" in request_json:
+                usuario.telefone = request_json["telefone"]
             db_session.add(usuario)
             db_session.commit()
             return "atualizado", 200

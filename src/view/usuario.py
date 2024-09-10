@@ -34,10 +34,12 @@ class Usuario(FlaskView):
             "email": {"type": "string", "empty": False, "required": True},
             "senha": {"type": "string", "empty": False, "required": True},
             "endereco": {"type": "string", "empty": False, "required": True},
-            "numero_endereco": {"type": "string", "empty": False, "required": True},
-            "complemento_endereco": {"type": "string", "empty": True, "required": True},
+            "numero_endereco": {"type": "string", "empty": True, "required": False},
+            "complemento_endereco": {"type": "string", "empty": True, "required": False},
             "cep": {"type": "string", "empty": False, "required": True},
             "data_nascimento": {"type": "string", "empty": False, "required": True},
+            "sexo": {"type": "string", "empty": False, "required": True},
+            "telefone": {"type": "string", "empty": False, "required": True},
         }
     )
     def post(self) -> Tuple[Dict[str, str], int]:
@@ -52,10 +54,12 @@ class Usuario(FlaskView):
             "nome": {"type": "string", "empty": False, "required": False},
             "senha": {"type": "string", "empty": False, "required": False},
             "endereco": {"type": "string", "empty": False, "required": False},
-            "numero_endereco": {"type": "string", "empty": False, "required": False},
+            "numero_endereco": {"type": "string", "empty": True, "required": False},
             "complemento_endereco": {"type": "string", "empty": True, "required": False},
             "cep": {"type": "string", "empty": False, "required": False},
             "data_nascimento": {"type": "string", "empty": False, "required": False},
+            "sexo": {"type": "string", "empty": False, "required": False},
+            "telefone": {"type": "string", "empty": False, "required": False},
         }
     )
     @ValidarToken()

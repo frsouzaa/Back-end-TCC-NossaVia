@@ -31,6 +31,12 @@ Base.query = db_session.query_property()
 metadata = Base.metadata
 
 
+class Sexo(enum.Enum):
+    m = "m"
+    f = "f"
+    n = "n"
+
+
 @dataclass
 class Usuario(Base):
     __tablename__: str = "usuario"
@@ -44,10 +50,12 @@ class Usuario(Base):
     email: str = Column(String(200), unique=True, nullable=False)
     senha: str = Column(String(200), nullable=False)
     endereco: str = Column(String(200), nullable=False)
-    numero_endereco: str = Column(String(200), nullable=False)
-    complemento_endereco: str = Column(String(200), nullable=False)
+    numero_endereco: str = Column(String(200), nullable=True)
+    complemento_endereco: str = Column(String(200), nullable=True)
     cep: str = Column(String(20), nullable=False)
     data_nascimento: str = Column(DateTime, nullable=False)
+    sexo: str = Column(Enum(Sexo), nullable=False)
+    telefone: str = Column(String(20), nullable=False)
     pontucao: int = Column(BigInteger, default=0, nullable=False)
 
     def __init__(
@@ -60,6 +68,8 @@ class Usuario(Base):
         complemento_endereco: str,
         cep: str,
         data_nascimento: str,
+        sexo: str,
+        telefone: str,
         pontucao: int,
     ) -> None:
         self.nome = nome
@@ -70,6 +80,8 @@ class Usuario(Base):
         self.complemento_endereco = complemento_endereco
         self.cep = cep
         self.data_nascimento = data_nascimento
+        self.sexo = sexo
+        self.telefone = telefone
         self.pontucao = pontucao
 
 
