@@ -20,7 +20,6 @@ class Denuncia:
             for foto in request.json.get("fotos")
         ]
         denuncia: DenunciaEntity = DenunciaEntity(
-            request.json.get("titulo"),
             request.json.get("descricao"),
             request.json.get("categoria"),
             request.json.get("data"),

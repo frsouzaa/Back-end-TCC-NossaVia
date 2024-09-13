@@ -16,7 +16,6 @@ class Denuncia(FlaskView):
 
     @ValidarRequest(
         {
-            "titulo": {"type": "string", "empty": False, "required": True},
             "descricao": {"type": "string", "empty": False, "required": True},
             "categoria": {"type": "string", "empty": False, "required": True},
             "data": {"type": "string", "empty": False, "required": True},

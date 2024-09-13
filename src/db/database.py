@@ -104,7 +104,6 @@ class Denuncia(Base):
     modificacao: str = Column(DateTime, default=func.now(), nullable=False)
     delete: bool = Column(Boolean, default=False, nullable=False)
 
-    titulo: str = Column(String(200), nullable=False)
     descricao: str = Column(String(500), nullable=False)
     categoria: str = Column(Enum(Categoria), nullable=False)
     data: str = Column(DateTime, nullable=False)
@@ -120,7 +119,6 @@ class Denuncia(Base):
 
     def __init__(
         self,
-        titulo: str,
         descricao: str,
         categoria: str,
         data: str,
@@ -134,7 +132,6 @@ class Denuncia(Base):
         qtd_curtidas: int,
         usuario_id: int,
     ) -> None:
-        self.titulo = titulo
         self.descricao = descricao
         self.categoria = categoria
         self.data = data
