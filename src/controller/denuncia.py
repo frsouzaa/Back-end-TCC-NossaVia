@@ -1,6 +1,4 @@
 from typing import Tuple, List, Dict
-from ..decorators.validar_token import ValidarToken
-from ..decorators.validar_request import ValidarRequest
 from flask import request
 from ..db.database import db_session
 from ..db.database import Denuncia as DenunciaEntity
@@ -16,28 +14,6 @@ from os import getenv
 
 class Denuncia:
 
-    @ValidarRequest(
-        {
-            "titulo": {"type": "string", "empty": False, "required": True},
-            "descricao": {"type": "string", "empty": False, "required": True},
-            "categoria": {"type": "string", "empty": False, "required": True},
-            "data": {"type": "string", "empty": False, "required": True},
-            "endereco": {"type": "string", "empty": False, "required": False},
-            "numero_endereco": {"type": "string", "empty": False, "required": False},
-            "ponto_referencia": {"type": "string", "empty": False, "required": False},
-            "cep": {"type": "string", "empty": False, "required": False},
-            "latitude": {"type": "string", "empty": False, "required": True},
-            "longitude": {"type": "string", "empty": False, "required": True},
-            "fotos": {
-                "type": "list",
-                "schema": {"type": "string"},
-                "empty": False,
-                "required": True,
-            },
-            "usuario_id": {"type": "integer", "empty": False, "required": True},
-        }
-    )
-    @ValidarToken()
     def post(self) -> Tuple[str, int]:
         fotos: List[Dict[str, str]] = [
             {"nome": f"imagem_{uuid4()}.jpg", "base64": foto}
@@ -56,7 +32,7 @@ class Denuncia:
             request.json.get("longitude"),
             [f"{getenv('AZURE_BLOB_URL')}/{foto['nome']}" for foto in fotos],
             0,
-            request.json.get("usuario_id"),
+            request.token_id,
         )
         try:
             for foto in fotos:

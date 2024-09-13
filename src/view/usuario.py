@@ -15,14 +15,12 @@ class Usuario(FlaskView):
     def dispatch_request(self) -> Response:
         if request.method == "POST":
             return self.post()
-        if not request.args.get("id"):
-            return {"msg": "id nao informado"}, 400
         if request.method == "GET":
-            return self.get(request.args.get("id"))
+            return self.get()
         if request.method == "PUT":
-            return self.put(request.args.get("id"))
+            return self.put()
         if request.method == "DELETE":
-            return self.delete(request.args.get("id"))
+            return self.delete()
 
     @ValidarRequest(
         {
@@ -46,8 +44,8 @@ class Usuario(FlaskView):
         return UsuarioController().post()
 
     @ValidarToken()
-    def get(self, id: int) -> Tuple[Dict[str, str], int]:
-        return UsuarioController().get(id)
+    def get(self) -> Tuple[Dict[str, str], int]:
+        return UsuarioController().get()
 
     @ValidarRequest(
         {
@@ -67,9 +65,9 @@ class Usuario(FlaskView):
         }
     )
     @ValidarToken()
-    def put(self, id: int) -> Tuple[Dict[str, str], int]:
-        return UsuarioController().put(id)
+    def put(self) -> Tuple[Dict[str, str], int]:
+        return UsuarioController().put()
 
     @ValidarToken()
-    def delete(self, id: int) -> Tuple[Dict[str, str], int]:
-        return UsuarioController().delete(id)
+    def delete(self) -> Tuple[Dict[str, str], int]:
+        return UsuarioController().delete()

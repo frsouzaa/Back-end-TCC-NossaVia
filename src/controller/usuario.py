@@ -36,17 +36,14 @@ class Usuario:
                 return {"msg": "categoria invalida"}, 409
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
-    def get(self, id):
-        if id != request.token_id:
-            return {"msg": "Não autorizado"}, 401
+    def get(self):
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == id, UsuarioModel.delete == False)
+                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
                 .one()
             )
             return {
-                "id": usuario.id,
                 "nome": usuario.nome,
                 "email": usuario.email,
                 "endereco": usuario.endereco,
@@ -54,7 +51,7 @@ class Usuario:
                 "complemento_endereco": usuario.complemento_endereco,
                 "cep": usuario.cep,
                 "data_nascimento": usuario.data_nascimento,
-                "sexo": usuario.sexo,
+                "sexo": usuario.sexo.value,
                 "telefone": usuario.telefone,
                 "pontucao": usuario.pontucao,
             }, 200
@@ -63,13 +60,11 @@ class Usuario:
         except:
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
-    def put(self, id):
-        if id != request.token_id:
-            return {"msg": "Não autorizado"}, 401
+    def put(self):
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == id, UsuarioModel.delete == False)
+                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
                 .one()
             )
             request_json = request.get_json()
@@ -99,13 +94,11 @@ class Usuario:
         except:
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
-    def delete(self, id):
-        if id != request.token_id:
-            return {"msg": "Não autorizado"}, 401
+    def delete(self):
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == id, UsuarioModel.delete == False)
+                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
                 .one()
             )
             usuario.delete = True
