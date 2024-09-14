@@ -28,11 +28,17 @@ class Usuario(FlaskView):
             "email": {"type": "string", "empty": False, "required": True},
             "senha": {"type": "string", "empty": False, "required": True},
             "endereco": {"type": "string", "empty": False, "required": True},
-            "numero_endereco": {"type": "string", "empty": True, "required": False},
+            "numero_endereco": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
             "complemento_endereco": {
                 "type": "string",
                 "empty": True,
                 "required": False,
+                "nullable": True,
             },
             "cep": {"type": "string", "empty": False, "required": True},
             "data_nascimento": {"type": "string", "empty": False, "required": True},
@@ -52,17 +58,28 @@ class Usuario(FlaskView):
             "nome": {"type": "string", "empty": False, "required": False},
             "senha": {"type": "string", "empty": False, "required": False},
             "endereco": {"type": "string", "empty": False, "required": False},
-            "numero_endereco": {"type": "string", "empty": True, "required": False},
+            "numero_endereco": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
             "complemento_endereco": {
                 "type": "string",
                 "empty": True,
                 "required": False,
+                "nullable": True,
             },
             "cep": {"type": "string", "empty": False, "required": False},
             "data_nascimento": {"type": "string", "empty": False, "required": False},
             "sexo": {"type": "string", "empty": False, "required": False},
             "telefone": {"type": "string", "empty": False, "required": False},
-            "foto": {"type": "string", "empty": True, "required": False},
+            "foto": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
         }
     )
     @ValidarToken()

@@ -92,10 +92,13 @@ class Usuario:
             if "telefone" in request_json:
                 usuario.telefone = request_json["telefone"]
             if "foto" in request_json:
-                foto_base64: str = request_json["foto"]
-                nome: str = f"imagem_{uuid4()}.jpg"
-                upload_blob(foto_base64, nome)
-                usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
+                if not request_json["foto"]:
+                    usuario.foto = None
+                else:
+                    foto_base64: str = request_json["foto"]
+                    nome: str = f"imagem_{uuid4()}.jpg"
+                    upload_blob(foto_base64, nome)
+                    usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
             db_session.commit()
             return {"msg": "atualizado"}, 200
