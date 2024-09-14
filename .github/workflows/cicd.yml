@@ -51,6 +51,7 @@ jobs:
             AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING }}
             AZURE_BLOB_CONTAINER=${{ secrets.AZURE_BLOB_CONTAINER }}
             AZURE_BLOB_URL=${{ secrets.AZURE_BLOB_URL }}
+            PORT=${{ vars.PORT }}
   azure:
     runs-on: ubuntu-latest
     needs: ["docker", "infos"]
