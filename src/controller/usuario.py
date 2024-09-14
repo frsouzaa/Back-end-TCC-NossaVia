@@ -43,7 +43,9 @@ class Usuario:
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
+                .filter(
+                    UsuarioModel.id == request.token_id, UsuarioModel.delete == False
+                )
                 .one()
             )
             return {
@@ -53,7 +55,9 @@ class Usuario:
                 "numero_endereco": usuario.numero_endereco,
                 "complemento_endereco": usuario.complemento_endereco,
                 "cep": usuario.cep,
-                "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d %H:%M:%S:%f"),
+                "data_nascimento": usuario.data_nascimento.strftime(
+                    "%Y-%m-%d %H:%M:%S:%f"
+                ),
                 "sexo": usuario.sexo.value,
                 "telefone": usuario.telefone,
                 "pontucao": usuario.pontucao,
@@ -68,7 +72,9 @@ class Usuario:
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
+                .filter(
+                    UsuarioModel.id == request.token_id, UsuarioModel.delete == False
+                )
                 .one()
             )
             request_json = request.get_json()
@@ -102,7 +108,21 @@ class Usuario:
                     usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
             db_session.commit()
-            return {"msg": "atualizado"}, 200
+            return {
+                "nome": usuario.nome,
+                "email": usuario.email,
+                "endereco": usuario.endereco,
+                "numero_endereco": usuario.numero_endereco,
+                "complemento_endereco": usuario.complemento_endereco,
+                "cep": usuario.cep,
+                "data_nascimento": usuario.data_nascimento.strftime(
+                    "%Y-%m-%d %H:%M:%S:%f"
+                ),
+                "sexo": usuario.sexo.value,
+                "telefone": usuario.telefone,
+                "pontucao": usuario.pontucao,
+                "foto": usuario.foto,
+            }, 200
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
@@ -112,7 +132,9 @@ class Usuario:
         try:
             usuario = (
                 db_session.query(UsuarioModel)
-                .filter(UsuarioModel.id == request.token_id, UsuarioModel.delete == False)
+                .filter(
+                    UsuarioModel.id == request.token_id, UsuarioModel.delete == False
+                )
                 .one()
             )
             usuario.delete = True
