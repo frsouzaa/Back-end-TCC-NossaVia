@@ -57,6 +57,7 @@ class Usuario:
                 "sexo": usuario.sexo.value,
                 "telefone": usuario.telefone,
                 "pontucao": usuario.pontucao,
+                "foto": usuario.foto,
             }, 200
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
