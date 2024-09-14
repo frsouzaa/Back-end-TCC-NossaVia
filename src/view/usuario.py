@@ -62,6 +62,7 @@ class Usuario(FlaskView):
             "data_nascimento": {"type": "string", "empty": False, "required": False},
             "sexo": {"type": "string", "empty": False, "required": False},
             "telefone": {"type": "string", "empty": False, "required": False},
+            "foto": {"type": "string", "empty": True, "required": False},
         }
     )
     @ValidarToken()

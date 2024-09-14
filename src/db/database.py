@@ -57,6 +57,7 @@ class Usuario(Base):
     sexo: str = Column(Enum(Sexo), nullable=False)
     telefone: str = Column(String(20), nullable=False)
     pontucao: int = Column(BigInteger, default=0, nullable=False)
+    foto: str = Column(String(2000), nullable=True)
 
     def __init__(
         self,

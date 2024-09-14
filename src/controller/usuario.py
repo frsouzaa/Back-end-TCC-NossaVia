@@ -6,6 +6,9 @@ from psycopg2.errors import InvalidTextRepresentation
 from ..utils.senha import criptografar
 from ..db.database import db_session
 from sqlalchemy.orm.exc import NoResultFound
+from ..utils.azure import upload_blob
+from uuid import uuid4
+from os import getenv
 
 
 class Usuario:
@@ -68,6 +71,8 @@ class Usuario:
                 .one()
             )
             request_json = request.get_json()
+            if not request_json:
+                return {"msg": "nada foi alterado"}, 200
             if "nome" in request_json:
                 usuario.nome = request_json["nome"]
             if "senha" in request_json:
@@ -86,6 +91,11 @@ class Usuario:
                 usuario.sexo = request_json["sexo"]
             if "telefone" in request_json:
                 usuario.telefone = request_json["telefone"]
+            if "foto" in request_json:
+                foto_base64: str = request_json["foto"]
+                nome: str = f"imagem_{uuid4()}.jpg"
+                upload_blob(foto_base64, nome)
+                usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
             db_session.commit()
             return {"msg": "atualizado"}, 200
