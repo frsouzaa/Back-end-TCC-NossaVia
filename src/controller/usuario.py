@@ -48,21 +48,7 @@ class Usuario:
                 )
                 .one()
             )
-            return {
-                "nome": usuario.nome,
-                "email": usuario.email,
-                "endereco": usuario.endereco,
-                "numero_endereco": usuario.numero_endereco,
-                "complemento_endereco": usuario.complemento_endereco,
-                "cep": usuario.cep,
-                "data_nascimento": usuario.data_nascimento.strftime(
-                    "%Y-%m-%d %H:%M:%S:%f"
-                ),
-                "sexo": usuario.sexo.value,
-                "telefone": usuario.telefone,
-                "pontucao": usuario.pontucao,
-                "foto": usuario.foto,
-            }, 200
+            return self.usuario_json(usuario), 200
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
@@ -108,21 +94,7 @@ class Usuario:
                     usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
             db_session.commit()
-            return {
-                "nome": usuario.nome,
-                "email": usuario.email,
-                "endereco": usuario.endereco,
-                "numero_endereco": usuario.numero_endereco,
-                "complemento_endereco": usuario.complemento_endereco,
-                "cep": usuario.cep,
-                "data_nascimento": usuario.data_nascimento.strftime(
-                    "%Y-%m-%d %H:%M:%S:%f"
-                ),
-                "sexo": usuario.sexo.value,
-                "telefone": usuario.telefone,
-                "pontucao": usuario.pontucao,
-                "foto": usuario.foto,
-            }, 200
+            return self.usuario_json(usuario), 200
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
@@ -145,3 +117,18 @@ class Usuario:
             return {"msg": "usuario nao encontrado"}, 404
         except:
             return {"msg": "ocorreu um erro desconhecido"}, 520
+
+    def usuario_json(self, usuario: UsuarioModel) -> Dict[str, str]:
+        return {
+            "nome": usuario.nome,
+            "email": usuario.email,
+            "endereco": usuario.endereco,
+            "numero_endereco": usuario.numero_endereco,
+            "complemento_endereco": usuario.complemento_endereco,
+            "cep": usuario.cep,
+            "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d %H:%M:%S:%f"),
+            "sexo": usuario.sexo.value,
+            "telefone": usuario.telefone,
+            "pontucao": usuario.pontucao,
+            "foto": usuario.foto,
+        }
