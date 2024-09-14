@@ -50,7 +50,7 @@ class Usuario:
                 "numero_endereco": usuario.numero_endereco,
                 "complemento_endereco": usuario.complemento_endereco,
                 "cep": usuario.cep,
-                "data_nascimento": usuario.data_nascimento,
+                "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d %H:%M:%S:%f"),
                 "sexo": usuario.sexo.value,
                 "telefone": usuario.telefone,
                 "pontucao": usuario.pontucao,
