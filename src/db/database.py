@@ -108,7 +108,7 @@ class Denuncia(Base):
     descricao: str = Column(String(500), nullable=False)
     categoria: str = Column(Enum(Categoria), nullable=False)
     data: str = Column(DateTime, nullable=False)
-    endereco: str = Column(String(200), nullable=True)
+    endereco: str = Column(String(200), nullable=False)
     numero_endereco: str = Column(String(200), nullable=True)
     ponto_referencia: str = Column(String(200), nullable=True)
     cep: str = Column(String(20), nullable=True)
