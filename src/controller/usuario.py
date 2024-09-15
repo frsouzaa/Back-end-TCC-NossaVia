@@ -9,6 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from ..utils.azure import upload_blob
 from uuid import uuid4
 from os import getenv
+import time
 
 
 class Usuario:
@@ -110,6 +111,7 @@ class Usuario:
                 .one()
             )
             usuario.delete = True
+            usuario.email = f"{usuario.email}_deletado_{int(time.time())}"
             db_session.add(usuario)
             db_session.commit()
             return {"msg": "deletado"}, 200
