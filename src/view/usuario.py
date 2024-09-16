@@ -56,7 +56,6 @@ class Usuario(FlaskView):
     @ValidarRequest(
         {
             "nome": {"type": "string", "empty": False, "required": False},
-            "senha": {"type": "string", "empty": False, "required": False},
             "endereco": {"type": "string", "empty": False, "required": False},
             "numero_endereco": {
                 "type": "string",

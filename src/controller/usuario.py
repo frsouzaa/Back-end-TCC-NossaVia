@@ -69,8 +69,6 @@ class Usuario:
                 return {"msg": "nada foi alterado"}, 200
             if "nome" in request_json:
                 usuario.nome = request_json["nome"]
-            if "senha" in request_json:
-                usuario.senha = criptografar(request_json["senha"])
             if "endereco" in request_json:
                 usuario.endereco = request_json["endereco"]
             if "numero_endereco" in request_json:
