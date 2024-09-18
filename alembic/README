@@ -1,5 +1,0 @@
-Generic single-database configuration.
-
-
-alembic revision --autogenerate -m "<mensagem>"
-alembic upgrade head
