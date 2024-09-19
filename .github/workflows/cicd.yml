@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Verificar se a versão já existe
         run: | 
-          docker pull frsouzaa/nossavia:${{ fromJson(needs.infos.outputs.image_json).tag }} > /dev/null && res=1 || res=0
+          docker pull ${{ vars.CONTAINER_NAME }}:${{ fromJson(needs.infos.outputs.image_json).tag }} > /dev/null && res=1 || res=0
           if [[ $res -eq 1 ]]; then
             echo "::error::A versão ${{ fromJson(needs.infos.outputs.image_json).tag }} já existe! Altere a versão antes de realizar outro build."
             exit 1
@@ -44,13 +44,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: frsouzaa/nossavia:${{ fromJson(needs.infos.outputs.image_json).tag }}
+          tags: ${{ vars.CONTAINER_NAME }}:${{ fromJson(needs.infos.outputs.image_json).tag }}
           build-args: |
             DB_URI=${{ secrets.DB_URI }}
             JWT_KEY=${{ secrets.JWT_KEY }}
             AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING }}
-            AZURE_BLOB_CONTAINER=${{ secrets.AZURE_BLOB_CONTAINER }}
-            AZURE_BLOB_URL=${{ secrets.AZURE_BLOB_URL }}
+            AZURE_BLOB_CONTAINER=${{ vars.AZURE_BLOB_CONTAINER }}
+            AZURE_BLOB_URL=${{ vars.AZURE_BLOB_URL }}
             PORT=${{ vars.PORT }}
   azure:
     runs-on: ubuntu-latest
@@ -65,7 +65,7 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az containerapp up \
-              --name teste \
-              --image index.docker.io/frsouzaa/nossavia:${{ fromJson(needs.infos.outputs.image_json).tag }} \
+              --name ${{ vars.CONTAINER_APP_NAME }} \
+              --image index.docker.io/${{ vars.CONTAINER_NAME }}:${{ fromJson(needs.infos.outputs.image_json).tag }} \
               --ingress external \
               --target-port 80
