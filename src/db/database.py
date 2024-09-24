@@ -1,4 +1,3 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import (
     Column,
     DateTime,
@@ -15,16 +14,17 @@ from sqlalchemy.orm import (
     sessionmaker,
     Mapped,
     mapped_column,
-    relationship,
+    declarative_base,
 )
 import os
-from dotenv import load_dotenv
 from dataclasses import dataclass
 import enum
+from sqlalchemy.pool import StaticPool
 
 
-load_dotenv()
-engine = create_engine(os.getenv("DB_URI"))
+engine = create_engine(
+    os.getenv("DB_URI"), connect_args={"check_same_thread": False}, poolclass=StaticPool
+)
 db_session = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
@@ -41,7 +41,7 @@ class Sexo(enum.Enum):
 class Usuario(Base):
     __tablename__: str = "usuario"
 
-    id: int = Column(BigInteger, primary_key=True)
+    id: int = Column(BigInteger, primary_key=True, autoincrement=True)
     criacao: str = Column(DateTime, default=func.now(), nullable=False)
     modificacao: str = Column(DateTime, default=func.now(), nullable=False)
     delete: bool = Column(Boolean, default=False, nullable=False)

@@ -10,8 +10,6 @@ class App():
 
     def __init__(self) -> None:
         CORS(self.app)
-        self.cadastrar_rotas()
-        self.run_App()
 
     def cadastrar_rotas(self):
         for view in View_List().list:
@@ -23,4 +21,6 @@ class App():
 
 if __name__ == "__main__":
     load_dotenv()
-    App()
+    app: App = App()
+    app.cadastrar_rotas()
+    app.run_App()

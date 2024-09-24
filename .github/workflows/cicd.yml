@@ -9,15 +9,34 @@ on:
 jobs:
   infos:
     runs-on: ubuntu-latest
+    env:
+      DB_URI: "sqlite://"
+      JWT_KEY: ${{ secrets.JWT_KEY }}
+      AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING }}
+      AZURE_BLOB_CONTAINER: ${{ vars.AZURE_BLOB_CONTAINER }}
+      AZURE_BLOB_URL: ${{ vars.AZURE_BLOB_URL }}
+      PORT: ${{ vars.PORT }}
     outputs:
       image_json: ${{ steps.image_json.outputs.image_json }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
       - name: ler image.json
         id: image_json
         run: |
           echo "image_json=$(jq -c . < image.json)" >> "$GITHUB_OUTPUT"
+      - name: testes
+        run: |
+          pip install -r requirements.txt
+          coverage run -m pytest -x
+          echo """
+            ### Arquivos com menos de 100% de cobertura de testes de código
+            $(coverage report -m --sort=cover --skip-empty --format=markdown --omit="tests/*" --skip-covered)
+          """ >> $GITHUB_STEP_SUMMARY
   docker:
     runs-on: ubuntu-latest
     needs: infos
