@@ -1,8 +1,7 @@
 from typing import Tuple, Dict
 from ..db.database import Usuario as UsuarioModel
 from flask import request
-from psycopg2.errors import UniqueViolation
-from psycopg2.errors import InvalidTextRepresentation
+from psycopg2.errorcodes import UNIQUE_VIOLATION, INVALID_TEXT_REPRESENTATION
 from ..utils.senha import criptografar
 from ..db.database import db_session
 from sqlalchemy.orm.exc import NoResultFound
@@ -10,6 +9,7 @@ from ..utils.azure import upload_blob
 from uuid import uuid4
 from os import getenv
 import time
+from datetime import datetime
 
 
 class Usuario:
@@ -24,7 +24,7 @@ class Usuario:
             request_json["numero_endereco"],
             request_json["complemento_endereco"],
             request_json["cep"],
-            request_json["data_nascimento"],
+            datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"),
             request_json["sexo"],
             request_json["telefone"],
             0,
@@ -34,10 +34,11 @@ class Usuario:
             db_session.commit()
             return {"msg": "criado"}, 201
         except Exception as e:
-            if isinstance(e.orig, UniqueViolation):
+            db_session.rollback()
+            if e.orig.pgcode == UNIQUE_VIOLATION:
                 return {"msg": "email ja cadastrado"}, 409
-            if isinstance(e.orig, InvalidTextRepresentation):
-                return {"msg": "categoria invalida"}, 409
+            if e.orig.pgcode == INVALID_TEXT_REPRESENTATION:
+                return {"msg": "sexo invalido"}, 409
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def get(self):
@@ -78,7 +79,7 @@ class Usuario:
             if "cep" in request_json:
                 usuario.cep = request_json["cep"]
             if "data_nascimento" in request_json:
-                usuario.data_nascimento = request_json["data_nascimento"]
+                usuario.data_nascimento = datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f")
             if "sexo" in request_json:
                 usuario.sexo = request_json["sexo"]
             if "telefone" in request_json:

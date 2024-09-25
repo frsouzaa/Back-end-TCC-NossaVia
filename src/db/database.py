@@ -19,12 +19,9 @@ from sqlalchemy.orm import (
 import os
 from dataclasses import dataclass
 import enum
-from sqlalchemy.pool import StaticPool
 
 
-engine = create_engine(
-    os.getenv("DB_URI"), connect_args={"check_same_thread": False}, poolclass=StaticPool
-)
+engine = create_engine(os.getenv("DB_URI"))
 db_session = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
@@ -41,7 +38,7 @@ class Sexo(enum.Enum):
 class Usuario(Base):
     __tablename__: str = "usuario"
 
-    id: int = Column(BigInteger, primary_key=True, autoincrement=True)
+    id: int = Column(BigInteger, primary_key=True)
     criacao: str = Column(DateTime, default=func.now(), nullable=False)
     modificacao: str = Column(DateTime, default=func.now(), nullable=False)
     delete: bool = Column(Boolean, default=False, nullable=False)

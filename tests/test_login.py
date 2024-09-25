@@ -1,4 +1,4 @@
-def test_login_autorizado(client, seed):
+def test_login_autorizado(client):
     response = client.post(
         "/login", json={"email": "email_0@teste.com", "senha": "senha_0"}
     )
@@ -19,9 +19,9 @@ def test_login_autorizado(client, seed):
     ]
 
 
-def test_login_nao_autorizado(client, seed):
+def test_login_nao_autorizado(client):
     response = client.post(
-        "/login", json={"email": "email_0@teste.com", "senha": "senha_errada"}
+        "/login", json={"email": "email_10@teste.com", "senha": "senha_errada"}
     )
     assert response.status_code == 401
     assert response.json == {"msg": "usuário ou senha incorretos"}
