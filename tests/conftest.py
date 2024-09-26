@@ -75,11 +75,6 @@ def client(app):
     return app.app.test_client()
 
 
-@pytest.fixture(scope="session")
-def runner(app):
-    return app.app.test_cli_runner()
-
-
 @pytest.fixture(scope="function")
 def login(client):
     def logar(email: str, senha: str):

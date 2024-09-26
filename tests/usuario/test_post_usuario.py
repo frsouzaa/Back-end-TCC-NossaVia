@@ -1,4 +1,4 @@
-def test_post(client):
+def test_post_usuario(client):
     response = client.post(
         "/usuario",
         json={
@@ -18,7 +18,7 @@ def test_post(client):
     assert response.json == {"msg": "criado"}
 
 
-def test_post_email_ja_cadastrado(client):
+def test_post_usuario_email_ja_cadastrado(client):
     payload = {
         "email": "test_cadastrar_usuario_email_ja_cadastrado2@email.com.br",
         "senha": "teste_usuario_cadastrado",
@@ -44,7 +44,7 @@ def test_post_email_ja_cadastrado(client):
     assert response.json == {"msg": "email ja cadastrado"}
 
 
-def test_post_sexo_invalido(client):
+def test_post_usuario_sexo_invalido(client):
     response = client.post(
         "/usuario",
         json={
@@ -64,7 +64,7 @@ def test_post_sexo_invalido(client):
     assert response.json == {"msg": "sexo invalido"}
 
 
-def test_post_sem_body(client):
+def test_post_usuario_sem_body(client):
     response = client.post(
         "/usuario",
         json={},

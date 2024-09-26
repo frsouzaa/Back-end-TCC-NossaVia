@@ -3,9 +3,10 @@ import base64
 from src.controller.usuario import Usuario
 
 
-def test_put(monkeypatch, client, login):
+def test_put_usuario(monkeypatch, client, login):
     def mocked(self, base64_string, blob_name):
         return None
+
     monkeypatch.setattr(Usuario, "upload_blob", mocked)
 
     image_path = "tests/assets/foto_usuario.png"
@@ -46,7 +47,7 @@ def test_put(monkeypatch, client, login):
     ]
 
 
-def test_put_sem_foto(client, login):
+def test_put_usuario_sem_foto(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
         "/usuario",
@@ -60,7 +61,7 @@ def test_put_sem_foto(client, login):
             "data_nascimento": "2004-06-15 00:00:00.000000",
             "sexo": "m",
             "telefone": "11 11111-1111",
-            "foto": None
+            "foto": None,
         },
     )
     assert response.status_code == 200
@@ -79,7 +80,7 @@ def test_put_sem_foto(client, login):
     ]
 
 
-def test_put_sem_body(client, login):
+def test_put_usuario_sem_body(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
         "/usuario",
@@ -90,7 +91,7 @@ def test_put_sem_body(client, login):
     assert response.json == {"msg": "nada foi alterado"}
 
 
-def test_put_nao_encontrado(client):
+def test_put_usuario_nao_encontrado(client):
     token = gerar_token({"id": "9999"})
     response = client.put(
         "/usuario",
