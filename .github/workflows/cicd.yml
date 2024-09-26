@@ -32,7 +32,7 @@ jobs:
       - name: testes
         run: |
           pip install -r requirements.txt
-          coverage run -m pytest -x
+          coverage run -m pytest -sx
           echo """
             ### Arquivos com menos de 100% de cobertura de testes de código
             $(coverage report -m --sort=cover --skip-empty --format=markdown --omit="tests/*" --skip-covered)

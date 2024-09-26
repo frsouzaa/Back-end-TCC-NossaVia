@@ -1,4 +1,4 @@
-def test_put_usuario(client, login):
+def test_put(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
         "/usuario",
@@ -28,3 +28,14 @@ def test_put_usuario(client, login):
         "sexo",
         "telefone",
     ]
+
+
+def test_put_sem_body(client, login):
+    token = login("email_10@teste.com", "senha_10")
+    response = client.put(
+        "/usuario",
+        headers={"Authorization": f"Bearer {token}"},
+        json={},
+    )
+    assert response.status_code == 200
+    assert response.json == {"msg": "nada foi alterado"}

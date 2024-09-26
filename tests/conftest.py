@@ -1,8 +1,10 @@
 import docker
 from time import sleep
 
-client = docker.DockerClient()
-container = client.containers.run(
+print("Iniciando container do PostgreSQL para realização dos testes")
+
+docker_client = docker.DockerClient()
+container = docker_client.containers.run(
     "postgres:16",
     environment={
         "POSTGRES_DB": "postgres",
@@ -12,6 +14,7 @@ container = client.containers.run(
     ports={"5432/tcp": "50000"},
     detach=True,
     auto_remove=True,
+    remove=True,
 )
 
 while container.exec_run("pg_isready").exit_code != 0:
@@ -22,8 +25,13 @@ from app import App
 from datetime import datetime
 from src.utils.senha import criptografar
 from src.db.database import db_session, Usuario, Base, engine
+from unittest import mock
+import os
+from src.utils.jwt import gerar as gerar_token
 
 Base.metadata.create_all(engine)
+
+print("Container de testes inicializado e configurado com sucesso")
 
 
 def pytest_sessionstart(session):
@@ -46,7 +54,7 @@ def pytest_sessionstart(session):
 
 
 def pytest_sessionfinish(session, exitstatus):
-    container.remove(force=True)
+    container.kill()
 
 
 @pytest.fixture(scope="session")
@@ -78,3 +86,12 @@ def login(client):
         return response.json.get("token")
 
     return logar
+
+
+@pytest.fixture(scope="function")
+def token_falso():
+    def gerar_token_falso(id):
+        with mock.patch.dict(os.environ, {"JWT_KEY": "CHAVE_TESTE"}):
+            return gerar_token({"id": str(id)})
+
+    return gerar_token_falso
