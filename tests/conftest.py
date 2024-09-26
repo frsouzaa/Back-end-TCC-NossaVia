@@ -55,6 +55,7 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     container.kill()
+    container.wait(condition="removed")
 
 
 @pytest.fixture(scope="session")

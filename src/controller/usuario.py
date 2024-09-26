@@ -79,7 +79,9 @@ class Usuario:
             if "cep" in request_json:
                 usuario.cep = request_json["cep"]
             if "data_nascimento" in request_json:
-                usuario.data_nascimento = datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f")
+                usuario.data_nascimento = datetime.strptime(
+                    request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"
+                )
             if "sexo" in request_json:
                 usuario.sexo = request_json["sexo"]
             if "telefone" in request_json:
@@ -90,7 +92,7 @@ class Usuario:
                 else:
                     foto_base64: str = request_json["foto"]
                     nome: str = f"imagem_{uuid4()}.jpg"
-                    upload_blob(foto_base64, nome)
+                    self.upload_blob(foto_base64, nome)
                     usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
             db_session.commit()
@@ -133,3 +135,6 @@ class Usuario:
             "pontucao": usuario.pontucao,
             "foto": usuario.foto,
         }
+
+    def upload_blob(self, foto_base64: str, nome: str):
+        upload_blob(foto_base64, nome)
