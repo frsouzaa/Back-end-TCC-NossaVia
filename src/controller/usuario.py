@@ -92,9 +92,11 @@ class Usuario:
                 else:
                     foto_base64: str = request_json["foto"]
                     nome: str = f"imagem_{uuid4()}.jpg"
-                    self.upload_blob(foto_base64, nome)
                     usuario.foto = f"{getenv('AZURE_BLOB_URL')}/{nome}"
             db_session.add(usuario)
+            db_session.flush()
+            if request_json.get("foto"):
+                self.upload_blob(foto_base64, nome)
             db_session.commit()
             return self.usuario_json(usuario), 200
         except NoResultFound:
