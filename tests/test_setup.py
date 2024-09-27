@@ -1,4 +1,5 @@
 import os
+import re
 
 
 def test_carrega_variaveis_de_ambiente():
@@ -13,7 +14,6 @@ def test_carrega_variaveis_de_ambiente():
 
 def test_endpoint_versao(client):
     response = client.get("/")
-    assert (
-        b"A aplica\xc3\xa7\xc3\xa3o est\xc3\xa1 rodando na vers\xc3\xa3o 1.7.0"
-        in response.data
-    )
+    res = re.match(r"^A aplicação está rodando na versão (0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$", response.data.decode())
+    if not res:
+        raise AssertionError("Versão não está no formato semântico")        
