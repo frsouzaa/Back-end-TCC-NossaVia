@@ -1,13 +1,13 @@
 import base64
-from src.controller.denuncia import Denuncia
 from src.utils.jwt import gerar as gerar_token
+from azure.storage.blob import BlobClient
 
 
 def test_post_denuncia(monkeypatch, client, login):
-    def mocked(self, base64_string, blob_name):
+    def upload_blob_mock(self, image_data, blob_type):
         return None
 
-    monkeypatch.setattr(Denuncia, "upload_blob", mocked)
+    monkeypatch.setattr(BlobClient, "upload_blob", upload_blob_mock)
 
     image_path = "tests/assets/foto_usuario.png"
     with open(image_path, "rb") as image_file:
@@ -90,6 +90,7 @@ def test_post_denuncia_data_invalida(client, login):
     )
     assert response.status_code == 409
     assert response.json == {"msg": "data invalida"}
+
 
 def test_post_denuncia_usuario_inexistente(client, login):
     image_path = "tests/assets/foto_usuario.png"

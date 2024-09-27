@@ -14,4 +14,4 @@ def upload_blob(base64_string: str, blob_name: str):
         container=container_name, blob=blob_name
     )
 
-    blob_client.upload_blob(image_data, blob_type="BlockBlob")
+    blob_client.upload_blob(image_data, "BlockBlob")

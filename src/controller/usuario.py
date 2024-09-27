@@ -96,7 +96,7 @@ class Usuario:
             db_session.add(usuario)
             db_session.flush()
             if request_json.get("foto"):
-                self.upload_blob(foto_base64, nome)
+                upload_blob(foto_base64, nome)
             db_session.commit()
             return self.usuario_json(usuario), 200
         except NoResultFound:
@@ -137,6 +137,3 @@ class Usuario:
             "pontucao": usuario.pontucao,
             "foto": usuario.foto,
         }
-
-    def upload_blob(self, foto_base64: str, nome: str):
-        upload_blob(foto_base64, nome)

@@ -1,13 +1,13 @@
 from src.utils.jwt import gerar as gerar_token
 import base64
-from src.controller.usuario import Usuario
+from azure.storage.blob import BlobClient
 
 
 def test_put_usuario(monkeypatch, client, login):
-    def mocked(self, base64_string, blob_name):
+    def upload_blob_mock(self, image_data, blob_type):
         return None
 
-    monkeypatch.setattr(Usuario, "upload_blob", mocked)
+    monkeypatch.setattr(BlobClient, "upload_blob", upload_blob_mock)
 
     image_path = "tests/assets/foto_usuario.png"
     with open(image_path, "rb") as image_file:

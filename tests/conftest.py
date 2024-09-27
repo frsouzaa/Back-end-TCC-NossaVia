@@ -7,11 +7,11 @@ docker_client = docker.DockerClient()
 container = docker_client.containers.run(
     "postgres:16",
     environment={
-        "POSTGRES_DB": "postgres",
-        "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "postgres",
+        "POSTGRES_DB": "test_db",
+        "POSTGRES_USER": "test_user",
+        "POSTGRES_PASSWORD": "test_pass",
     },
-    ports={"5432/tcp": "50000"},
+    ports={"5432/tcp": "12345"},
     detach=True,
     auto_remove=True,
     remove=True,

@@ -4,7 +4,6 @@ from ..db.database import db_session
 from ..db.database import Denuncia as DenunciaEntity
 from psycopg2.errors import (
     InvalidTextRepresentation,
-    InvalidDatetimeFormat,
     ForeignKeyViolation,
 )
 from ..utils.azure import upload_blob
@@ -42,7 +41,7 @@ class Denuncia:
             db_session.add(denuncia)
             db_session.flush()
             for foto in fotos:
-                self.upload_blob(foto["base64"], foto["nome"])
+                upload_blob(foto["base64"], foto["nome"])
             db_session.commit()
         except Exception as e:
             db_session.rollback()
@@ -52,6 +51,3 @@ class Denuncia:
                 return {"msg": "usuario inexistente"}, 409
             return {"msg": "ocorreu um erro desconhecido"}, 520
         return {"msg": "criado"}, 201
-
-    def upload_blob(self, foto_base64: str, nome: str):
-        upload_blob(foto_base64, nome)
