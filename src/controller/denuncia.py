@@ -33,7 +33,10 @@ class Denuncia:
             request.json.get("cep"),
             request.json.get("latitude"),
             request.json.get("longitude"),
-            [f"{getenv('AZURE_BLOB_URL')}/{foto['nome']}" for foto in fotos],
+            [
+                f"{getenv('AZURE_BLOB_URL')}/{getenv('AZURE_BLOB_CONTAINER_DENUNCIAS')}/{foto['nome']}"
+                for foto in fotos
+            ],
             0,
             request.token_id,
         )
@@ -41,7 +44,11 @@ class Denuncia:
             db_session.add(denuncia)
             db_session.flush()
             for foto in fotos:
-                upload_blob(foto["base64"], foto["nome"])
+                upload_blob(
+                    foto["base64"],
+                    foto["nome"],
+                    getenv("AZURE_BLOB_CONTAINER_DENUNCIAS"),
+                )
             db_session.commit()
         except Exception as e:
             db_session.rollback()

@@ -13,7 +13,8 @@ jobs:
       DB_URI: "postgresql+psycopg2://postgres:postgres@localhost:50000/postgres"
       JWT_KEY: ${{ secrets.JWT_KEY }}
       AZURE_CONNECTION_STRING: ${{ secrets.AZURE_CONNECTION_STRING }}
-      AZURE_BLOB_CONTAINER: ${{ vars.AZURE_BLOB_CONTAINER }}
+      AZURE_BLOB_CONTAINER_USUARIOS: ${{ vars.AZURE_BLOB_CONTAINER_USUARIOS }}
+      AZURE_BLOB_CONTAINER_DENUNCIAS: ${{ vars.AZURE_BLOB_CONTAINER_DENUNCIAS }}
       AZURE_BLOB_URL: ${{ vars.AZURE_BLOB_URL }}
       PORT: ${{ vars.PORT }}
     outputs:
@@ -68,7 +69,8 @@ jobs:
             DB_URI=${{ secrets.DB_URI }}
             JWT_KEY=${{ secrets.JWT_KEY }}
             AZURE_CONNECTION_STRING=${{ secrets.AZURE_CONNECTION_STRING }}
-            AZURE_BLOB_CONTAINER=${{ vars.AZURE_BLOB_CONTAINER }}
+            AZURE_BLOB_CONTAINER_USUARIOS=${{ vars.AZURE_BLOB_CONTAINER_USUARIOS }}
+            AZURE_BLOB_CONTAINER_DENUNCIAS=${{ vars.AZURE_BLOB_CONTAINER_DENUNCIAS }}
             AZURE_BLOB_URL=${{ vars.AZURE_BLOB_URL }}
             PORT=${{ vars.PORT }}
   azure:
