@@ -40,6 +40,8 @@ jobs:
           """ >> $GITHUB_STEP_SUMMARY
   docker:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILD_RECORD_UPLOAD: false
     needs: infos
     steps:
       - name: Checkout
