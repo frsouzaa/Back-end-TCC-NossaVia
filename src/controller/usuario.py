@@ -58,6 +58,9 @@ class Usuario:
 
     def put(self):
         try:
+            request_json = request.get_json()
+            if not request_json:
+                return {"msg": "nada foi alterado"}, 200
             usuario = (
                 db_session.query(UsuarioModel)
                 .filter(
@@ -65,27 +68,22 @@ class Usuario:
                 )
                 .one()
             )
-            request_json = request.get_json()
-            if not request_json:
-                return {"msg": "nada foi alterado"}, 200
-            if "nome" in request_json:
-                usuario.nome = request_json["nome"]
-            if "endereco" in request_json:
-                usuario.endereco = request_json["endereco"]
-            if "numero_endereco" in request_json:
-                usuario.numero_endereco = request_json["numero_endereco"]
-            if "complemento_endereco" in request_json:
-                usuario.complemento_endereco = request_json["complemento_endereco"]
-            if "cep" in request_json:
-                usuario.cep = request_json["cep"]
-            if "data_nascimento" in request_json:
-                usuario.data_nascimento = datetime.strptime(
-                    request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"
-                )
-            if "sexo" in request_json:
-                usuario.sexo = request_json["sexo"]
-            if "telefone" in request_json:
-                usuario.telefone = request_json["telefone"]
+            if v := request_json.get("nome"):
+                usuario.nome = v
+            if v := request_json.get("endereco"):
+                usuario.endereco = v
+            if v := request_json.get("numero_endereco"):
+                usuario.numero_endereco = v
+            if v := request_json.get("complemento_endereco"):
+                usuario.complemento_endereco = v
+            if v := request_json.get("cep"):
+                usuario.cep = v
+            if v := request_json.get("data_nascimento"):
+                usuario.data_nascimento = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
+            if v := request_json.get("sexo"):
+                usuario.sexo = v
+            if v := request_json.get("telefone"):
+                usuario.telefone = v
             if "foto" in request_json:
                 if not request_json["foto"]:
                     usuario.foto = None
