@@ -51,21 +51,24 @@ def pytest_sessionstart(session):
         )
         db_session.add(usuario)
     db_session.flush()
-    denuncia: Denuncia = Denuncia(
-        "descricao teste",
-        "via",
-        "2024-09-25 23:13:00.000000",
-        "rua teste",
-        "123",
-        "perto do teste",
-        "12345-123",
-        "-1234567890",
-        "-1234567890",
-        "",
-        0,
-        1,
-    )
-    db_session.add(denuncia)
+    for i in range(11):
+        denuncia: Denuncia = Denuncia(
+            f"descricao_{i}",
+            "via",
+            "2024-10-03 19:47:00.000000",
+            "rua teste",
+            "123",
+            "perto do teste",
+            "12345-123",
+            "-1234567890",
+            "-1234567890",
+            "",
+            0,
+            i+1,
+            "nao_resolvido",
+            None,
+        )
+        db_session.add(denuncia)
     db_session.commit()
 
 

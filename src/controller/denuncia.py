@@ -40,6 +40,8 @@ class Denuncia:
             ],
             0,
             request.token_id,
+            "nao_resolvido",
+            None,
         )
         try:
             db_session.add(denuncia)
@@ -64,7 +66,47 @@ class Denuncia:
         return "TODO", 501
 
     def put(self) -> Tuple[Dict[str, str], int]:
-        return "TODO", 501
+        request_json = request.get_json()
+        try:
+            if not request.json:
+                return {"msg": "nada foi alterado"}, 200
+            denuncia = (
+                db_session.query(DenunciaEntity)
+                .filter(
+                    DenunciaEntity.id == request.args.get("id"),
+                    DenunciaEntity.delete == False,
+                    DenunciaEntity.usuario_id == request.token_id,
+                )
+                .one()
+            )
+            if v := request_json.get("descricao"):
+                denuncia.descricao = v
+            if v := request_json.get("data"):
+                denuncia.data = datetime.strptime(
+                    v, "%Y-%m-%d %H:%M:%S.%f"
+                )
+            if v := request_json.get("endereco"):
+                denuncia.endereco = v
+            if v := request_json.get("numero_endereco"):
+                denuncia.numero_endereco = v
+            if v := request_json.get("ponto_referencia"):
+                denuncia.ponto_referencia = v
+            if v := request_json.get("cep"):
+                denuncia.cep = v
+            if v := request_json.get("latitude"):
+                denuncia.latitude = v
+            if v := request_json.get("longitude"):
+                denuncia.longitude = v
+            if v := request_json.get("status"):
+                denuncia.status = v
+                denuncia.atualizacao_status = datetime.now()
+            db_session.add(denuncia)
+            db_session.commit()
+            return self.denuncia_json(denuncia), 200
+        except NoResultFound:
+            return {"msg": "denuncia nao encontrada"}, 404
+        except:
+            return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def delete(self) -> Tuple[Dict[str, str], int]:
         try:
@@ -86,3 +128,21 @@ class Denuncia:
             return {"msg": "denuncia nao encontrada"}, 404
         except:
             return {"msg": "ocorreu um erro desconhecido"}, 520
+
+    def denuncia_json(self, denuncia: DenunciaEntity) -> Dict[str, str]:
+        return {
+            "id": denuncia.id,
+            "criacao": denuncia.criacao,
+            "descricao": denuncia.descricao,
+            "categoria": denuncia.categoria.value,
+            "data": denuncia.data,
+            "endereco": denuncia.endereco,
+            "numero_endereco": denuncia.numero_endereco,
+            "ponto_referencia": denuncia.ponto_referencia,
+            "cep": denuncia.cep,
+            "latitude": denuncia.latitude,
+            "longitude": denuncia.longitude,
+            "fotos": denuncia.fotos,
+            "qtd_curtidas": denuncia.qtd_curtidas,
+            "status": denuncia.status.value,
+        }

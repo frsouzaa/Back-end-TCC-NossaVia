@@ -66,15 +66,49 @@ class Denuncia(FlaskView):
     def get(self) -> Tuple[Dict[str, str], int]:
         return DenunciaController().get()
 
+    @ValidarRequest(
+        {
+            "descricao": {"type": "string", "empty": False, "required": False},
+            "data": {"type": "string", "empty": False, "required": False},
+            "endereco": {
+                "type": "string",
+                "empty": False,
+                "required": False,
+            },
+            "numero_endereco": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "ponto_referencia": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "cep": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "latitude": {"type": "string", "empty": False, "required": False},
+            "longitude": {"type": "string", "empty": False, "required": False},
+            "status": {"type": "string", "empty": False, "required": False},
+        },
+        args={
+            "id": {"type": "string", "empty": False, "required": True},
+        },
+    )
     @ValidarToken()
     def put(self) -> Tuple[Dict[str, str], int]:
         return DenunciaController().put()
 
     @ValidarRequest(
-        {
+        args={
             "id": {"type": "string", "empty": False, "required": True},
-        },
-        "args",
+        }
     )
     @ValidarToken()
     def delete(self) -> Tuple[Dict[str, str], int]:

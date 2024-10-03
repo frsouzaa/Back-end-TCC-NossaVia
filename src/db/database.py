@@ -91,6 +91,11 @@ class Categoria(enum.Enum):
     carro = "carro"
     sinalizacao = "sinalizacao"
     outros = "outros"
+    
+
+class Status(enum.Enum):
+    resolvido = "resolvido"
+    nao_resolvido = "nao_resolvido"
 
 
 @dataclass
@@ -113,6 +118,9 @@ class Denuncia(Base):
     longitude: str = Column(String(200), nullable=False)
     fotos: str = Column(String(2000), nullable=False)
     qtd_curtidas: int = Column(BigInteger, default=0, nullable=False)
+    status: str = Column(Enum(Status), nullable=False, default="nao_resolvido")
+    atualizacao_status: str = Column(DateTime, nullable=True)
+
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
 
     def __init__(
@@ -129,6 +137,8 @@ class Denuncia(Base):
         fotos: str,
         qtd_curtidas: int,
         usuario_id: int,
+        status: str,
+        atualizacao_status: str,
     ) -> None:
         self.descricao = descricao
         self.categoria = categoria
@@ -142,3 +152,5 @@ class Denuncia(Base):
         self.fotos = fotos
         self.qtd_curtidas = qtd_curtidas
         self.usuario_id = usuario_id
+        self.status = status
+        self.atualizacao_status = atualizacao_status
