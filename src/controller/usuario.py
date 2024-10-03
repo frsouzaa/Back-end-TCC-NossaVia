@@ -115,6 +115,7 @@ class Usuario:
             )
             usuario.delete = True
             usuario.email = f"{usuario.email}_deletado_{int(time.time())}"
+            usuario.modificacao = datetime.now()
             db_session.add(usuario)
             db_session.commit()
             return {"msg": "deletado"}, 200

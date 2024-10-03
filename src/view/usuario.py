@@ -1,8 +1,7 @@
 from flask.views import View as FlaskView
-from flask import Response
+from flask import Response, request
 from typing import List, Tuple, Dict
 from ..controller.usuario import Usuario as UsuarioController
-from flask import request
 from ..decorators.validar_token import ValidarToken
 from ..decorators.validar_request import ValidarRequest
 

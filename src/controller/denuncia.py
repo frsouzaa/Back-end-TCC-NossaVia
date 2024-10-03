@@ -10,11 +10,12 @@ from ..utils.azure import upload_blob
 from uuid import uuid4
 from datetime import datetime
 from os import getenv
+from sqlalchemy.orm.exc import NoResultFound
 
 
 class Denuncia:
 
-    def post(self) -> Tuple[str, int]:
+    def post(self) -> Tuple[Dict[str, str], int]:
         fotos: List[Dict[str, str]] = [
             {"nome": f"imagem_{uuid4()}.jpg", "base64": foto}
             for foto in request.json.get("fotos")
@@ -58,3 +59,30 @@ class Denuncia:
                 return {"msg": "usuario inexistente"}, 409
             return {"msg": "ocorreu um erro desconhecido"}, 520
         return {"msg": "criado"}, 201
+
+    def get(self) -> Tuple[List[Dict[str, str]], int]:
+        return "TODO", 501
+
+    def put(self) -> Tuple[Dict[str, str], int]:
+        return "TODO", 501
+
+    def delete(self) -> Tuple[Dict[str, str], int]:
+        try:
+            denuncia = (
+                db_session.query(DenunciaEntity)
+                .filter(
+                    DenunciaEntity.id == request.args.get("id"),
+                    DenunciaEntity.delete == False,
+                    DenunciaEntity.usuario_id == request.token_id,
+                )
+                .one()
+            )
+            denuncia.delete = True
+            denuncia.modificacao = datetime.now()
+            db_session.add(denuncia)
+            db_session.commit()
+            return {"msg": "deletado"}, 200
+        except NoResultFound:
+            return {"msg": "denuncia nao encontrada"}, 404
+        except:
+            return {"msg": "ocorreu um erro desconhecido"}, 520

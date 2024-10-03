@@ -24,7 +24,7 @@ import pytest
 from app import App
 from datetime import datetime
 from src.utils.senha import criptografar
-from src.db.database import db_session, Usuario, Base, engine
+from src.db.database import db_session, Usuario, Base, engine, Denuncia
 from unittest import mock
 import os
 from src.utils.jwt import gerar as gerar_token
@@ -50,7 +50,23 @@ def pytest_sessionstart(session):
             0,
         )
         db_session.add(usuario)
-        db_session.commit()
+    db_session.flush()
+    denuncia: Denuncia = Denuncia(
+        "descricao teste",
+        "via",
+        "2024-09-25 23:13:00.000000",
+        "rua teste",
+        "123",
+        "perto do teste",
+        "12345-123",
+        "-1234567890",
+        "-1234567890",
+        "",
+        0,
+        1,
+    )
+    db_session.add(denuncia)
+    db_session.commit()
 
 
 def pytest_sessionfinish(session, exitstatus):

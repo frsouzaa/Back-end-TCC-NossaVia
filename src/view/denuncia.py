@@ -1,5 +1,5 @@
 from flask.views import View as FlaskView
-from flask import Response
+from flask import Response, request
 from typing import List, Tuple, Dict
 from ..controller.denuncia import Denuncia as DenunciaController
 from ..decorators.validar_token import ValidarToken
@@ -8,11 +8,18 @@ from ..decorators.validar_request import ValidarRequest
 
 class Denuncia(FlaskView):
     rota: str = "/denuncia"
-    methods: List[str] = ["post"]
+    methods: List[str] = ["post", "get", "put", "delete"]
     name: str = __name__
 
     def dispatch_request(self) -> Response:
-        return self.post()
+        if request.method == "POST":
+            return self.post()
+        if request.method == "GET":
+            return self.get()
+        if request.method == "PUT":
+            return self.put()
+        if request.method == "DELETE":
+            return self.delete()
 
     @ValidarRequest(
         {
@@ -55,3 +62,20 @@ class Denuncia(FlaskView):
     @ValidarToken()
     def post(self) -> Tuple[Dict[str, str], int]:
         return DenunciaController().post()
+
+    def get(self) -> Tuple[Dict[str, str], int]:
+        return DenunciaController().get()
+
+    @ValidarToken()
+    def put(self) -> Tuple[Dict[str, str], int]:
+        return DenunciaController().put()
+
+    @ValidarRequest(
+        {
+            "id": {"type": "string", "empty": False, "required": True},
+        },
+        "args",
+    )
+    @ValidarToken()
+    def delete(self) -> Tuple[Dict[str, str], int]:
+        return DenunciaController().delete()

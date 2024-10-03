@@ -3,6 +3,7 @@ from ..db.database import Usuario
 from flask import request
 from ..utils.senha import descriptografar, criptografar
 from ..db.database import db_session
+from datetime import datetime
 
 
 class AlterarSenha:
@@ -17,6 +18,7 @@ class AlterarSenha:
         ):
             return {"msg": "senha atual incorreta"}, 400
         usuario.senha = criptografar(request_json["senhaNova"])
+        usuario.modificacao = datetime.now()
         db_session.add(usuario)
         db_session.commit()
         return {"msg": "senha alterada"}, 200
