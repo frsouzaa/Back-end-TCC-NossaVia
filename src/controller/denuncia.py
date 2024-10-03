@@ -68,8 +68,6 @@ class Denuncia:
     def put(self) -> Tuple[Dict[str, str], int]:
         request_json = request.get_json()
         try:
-            if not request.json:
-                return {"msg": "nada foi alterado"}, 200
             denuncia = (
                 db_session.query(DenunciaEntity)
                 .filter(
@@ -79,6 +77,8 @@ class Denuncia:
                 )
                 .one()
             )
+            if not request.json:
+                return {"msg": "nada foi alterado"}, 200
             if v := request_json.get("descricao"):
                 denuncia.descricao = v
             if v := request_json.get("data"):

@@ -59,8 +59,6 @@ class Usuario:
     def put(self):
         try:
             request_json = request.get_json()
-            if not request_json:
-                return {"msg": "nada foi alterado"}, 200
             usuario = (
                 db_session.query(UsuarioModel)
                 .filter(
@@ -68,6 +66,8 @@ class Usuario:
                 )
                 .one()
             )
+            if not request_json:
+                return {"msg": "nada foi alterado"}, 200
             if v := request_json.get("nome"):
                 usuario.nome = v
             if v := request_json.get("endereco"):
