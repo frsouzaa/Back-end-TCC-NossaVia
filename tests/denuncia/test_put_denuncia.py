@@ -12,6 +12,7 @@ def test_put_denuncia(client, login):
             "cep": "12345-123",
             "latitude": "-1234567890",
             "longitude": "-1234567890",
+            "status": "resolvido"
         },
     )
     assert response.status_code == 200
@@ -50,3 +51,13 @@ def test_put_denuncia_nao_encontrada(client, login):
     )
     assert response.status_code == 404
     assert response.json == {"msg": "denuncia nao encontrada"}
+
+def test_put_denuncia_sem_body(client, login):
+    token = login("email_10@teste.com", "senha_10")
+    response = client.put(
+        "/denuncia?id=11",
+        headers={"Authorization": f"Bearer {token}"},
+        json={}
+    )
+    assert response.status_code == 200
+    assert response.json == {"msg": "nada foi alterado"}
