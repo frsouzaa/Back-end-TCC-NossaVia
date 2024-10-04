@@ -1,25 +1,3 @@
-import docker
-from time import sleep
-
-print("Iniciando container do PostgreSQL para realização dos testes")
-
-docker_client = docker.DockerClient()
-container = docker_client.containers.run(
-    "postgres:16",
-    environment={
-        "POSTGRES_DB": "test_db",
-        "POSTGRES_USER": "test_user",
-        "POSTGRES_PASSWORD": "test_pass",
-    },
-    ports={"5432/tcp": "12345"},
-    detach=True,
-    auto_remove=True,
-    remove=True,
-)
-
-while container.exec_run("pg_isready").exit_code != 0:
-    sleep(0.5)
-
 import pytest
 from app import App
 from datetime import datetime
@@ -29,12 +7,9 @@ from unittest import mock
 import os
 from src.utils.jwt import gerar as gerar_token
 
-Base.metadata.create_all(engine)
-
-print("Container de testes inicializado e configurado com sucesso")
-
 
 def pytest_sessionstart(session):
+    Base.metadata.create_all(engine)
     for i in range(11):
         usuario: Usuario = Usuario(
             f"usuario teste {i}",
@@ -64,17 +39,12 @@ def pytest_sessionstart(session):
             "-1234567890",
             "",
             0,
-            i+1,
+            i + 1,
             "nao_resolvido",
             None,
         )
         db_session.add(denuncia)
     db_session.commit()
-
-
-def pytest_sessionfinish(session, exitstatus):
-    container.kill()
-    container.wait(condition="removed")
 
 
 @pytest.fixture(scope="session")
