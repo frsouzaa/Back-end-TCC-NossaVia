@@ -19,7 +19,7 @@ from sqlalchemy.orm import (
 import os
 from dataclasses import dataclass
 import enum
-
+from geoalchemy2 import Geometry
 
 engine = create_engine(os.getenv("DB_URI"))
 db_session = scoped_session(sessionmaker(bind=engine))
@@ -120,6 +120,7 @@ class Denuncia(Base):
     qtd_curtidas: int = Column(BigInteger, default=0, nullable=False)
     status: str = Column(Enum(Status), nullable=False, default="nao_resolvido")
     atualizacao_status: str = Column(DateTime, nullable=True)
+    geom: str = Column(Geometry(geometry_type="POINT", srid=4326), nullable=False)
 
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
 
@@ -139,6 +140,7 @@ class Denuncia(Base):
         usuario_id: int,
         status: str,
         atualizacao_status: str,
+        geom: str,
     ) -> None:
         self.descricao = descricao
         self.categoria = categoria
@@ -154,3 +156,4 @@ class Denuncia(Base):
         self.usuario_id = usuario_id
         self.status = status
         self.atualizacao_status = atualizacao_status
+        self.geom = geom

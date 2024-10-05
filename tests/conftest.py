@@ -6,6 +6,7 @@ from src.db.database import db_session, Usuario, Base, engine, Denuncia
 from unittest import mock
 import os
 from src.utils.jwt import gerar as gerar_token
+from sqlalchemy import func
 
 
 def pytest_sessionstart(session):
@@ -27,6 +28,8 @@ def pytest_sessionstart(session):
         db_session.add(usuario)
     db_session.flush()
     for i in range(11):
+        latitude = i
+        longitude = i
         denuncia: Denuncia = Denuncia(
             f"descricao_{i}",
             "via",
@@ -35,13 +38,14 @@ def pytest_sessionstart(session):
             "123",
             "perto do teste",
             "12345-123",
-            "-1234567890",
-            "-1234567890",
+            latitude,
+            longitude,
             "",
             0,
             i + 1,
             "nao_resolvido",
             None,
+            func.ST_SetSRID(func.ST_MakePoint(longitude, latitude), 4326),
         )
         db_session.add(denuncia)
     db_session.commit()

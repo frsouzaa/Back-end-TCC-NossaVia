@@ -11,6 +11,7 @@ from uuid import uuid4
 from datetime import datetime
 from os import getenv
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import func
 
 
 class Denuncia:
@@ -42,6 +43,12 @@ class Denuncia:
             request.token_id,
             "nao_resolvido",
             None,
+            func.ST_SetSRID(
+                func.ST_MakePoint(
+                    request.json.get("longitude"), request.json.get("latitude")
+                ),
+                4326,
+            ),
         )
         try:
             db_session.add(denuncia)
@@ -82,9 +89,7 @@ class Denuncia:
             if v := request_json.get("descricao"):
                 denuncia.descricao = v
             if v := request_json.get("data"):
-                denuncia.data = datetime.strptime(
-                    v, "%Y-%m-%d %H:%M:%S.%f"
-                )
+                denuncia.data = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
             if v := request_json.get("endereco"):
                 denuncia.endereco = v
             if v := request_json.get("numero_endereco"):
@@ -97,6 +102,13 @@ class Denuncia:
                 denuncia.latitude = v
             if v := request_json.get("longitude"):
                 denuncia.longitude = v
+            if request_json.get("longitude") or request_json.get("latitude"):
+                denuncia.geom = func.ST_SetSRID(
+                    func.ST_MakePoint(
+                        request_json.get("longitude"), request_json.get("latitude")
+                    ),
+                    4326,
+                )
             if v := request_json.get("status"):
                 denuncia.status = v
                 denuncia.atualizacao_status = datetime.now()
