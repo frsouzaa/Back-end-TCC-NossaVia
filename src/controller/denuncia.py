@@ -2,6 +2,7 @@ from typing import Tuple, List, Dict
 from flask import request
 from ..db.database import db_session
 from ..db.database import Denuncia as DenunciaEntity
+from ..db.database import Usuario as UsuarioEntity
 from psycopg2.errors import (
     InvalidTextRepresentation,
     ForeignKeyViolation,
@@ -12,6 +13,8 @@ from datetime import datetime
 from os import getenv
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func
+from geoalchemy2 import Geography
+from sqlalchemy.sql.expression import cast
 
 
 class Denuncia:
@@ -70,7 +73,78 @@ class Denuncia:
         return {"msg": "criado"}, 201
 
     def get(self) -> Tuple[List[Dict[str, str]], int]:
-        return "TODO", 501
+        if request.args.get("id"):
+            try:
+                denuncia = (
+                    db_session.query(DenunciaEntity)
+                    .filter(
+                        DenunciaEntity.id == request.args.get("id"),
+                        DenunciaEntity.delete == False,
+                    )
+                    .one()
+                )
+                return self.denuncia_json(denuncia), 200
+            except NoResultFound:
+                return {"msg": "denuncia nao encontrada"}, 404
+            except:
+                return {"msg": "ocorreu um erro desconhecido"}, 520
+        if (
+            request.args.get("latitude")
+            and request.args.get("longitude")
+            and request.args.get("page") != None
+        ):
+            page: int = int(request.args.get("page"))
+            LIMIT: int = 10
+            try:
+                denuncias = (
+                    db_session.query(
+                        DenunciaEntity.status,
+                        DenunciaEntity.id,
+                        DenunciaEntity.descricao,
+                        DenunciaEntity.fotos,
+                        DenunciaEntity.endereco,
+                        DenunciaEntity.numero_endereco,
+                        DenunciaEntity.categoria,
+                        UsuarioEntity.nome,
+                        UsuarioEntity.foto,
+                    )
+                    .join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
+                    .filter(
+                        DenunciaEntity.delete == False,
+                    )
+                    .order_by(
+                        func.ST_Distance(
+                            DenunciaEntity.geom,
+                            cast(
+                                func.ST_MakePoint(
+                                    float(request.args.get("longitude")),
+                                    float(request.args.get("latitude")),
+                                ),
+                                Geography,
+                            ),
+                        )
+                    )
+                    .offset(page * LIMIT)
+                    .limit(LIMIT)
+                    .all()
+                )
+                return [
+                    {
+                        "status": denuncia.status.value,
+                        "id": denuncia.id,
+                        "descricao": denuncia.descricao,
+                        "fotos": denuncia.fotos,
+                        "endereco": denuncia.endereco,
+                        "numero_endereco": denuncia.numero_endereco,
+                        "categoria": denuncia.categoria.value,
+                        "nome_usuario": denuncia.nome,
+                        "foto_usuario": denuncia.foto,
+                        "page": page,
+                    }
+                    for denuncia in denuncias
+                ], 200
+            except:
+                return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def put(self) -> Tuple[Dict[str, str], int]:
         request_json = request.get_json()

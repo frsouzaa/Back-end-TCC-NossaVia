@@ -63,6 +63,14 @@ class Denuncia(FlaskView):
     def post(self) -> Tuple[Dict[str, str], int]:
         return DenunciaController().post()
 
+    @ValidarRequest(
+        args={
+            "id": {"type": "string", "empty": False, "required": False},
+            "latitude": {"type": "string", "empty": True, "required": False},
+            "longitude": {"type": "string", "empty": True, "required": False},
+            "page": {"type": "string", "empty": False, "required": False},
+        }
+    )
     def get(self) -> Tuple[Dict[str, str], int]:
         return DenunciaController().get()
 
