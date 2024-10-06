@@ -38,10 +38,12 @@ class Denuncia:
             request.json.get("cep"),
             request.json.get("latitude"),
             request.json.get("longitude"),
-            [
-                f"{getenv('AZURE_BLOB_URL')}/{getenv('AZURE_BLOB_CONTAINER_DENUNCIAS')}/{foto['nome']}"
-                for foto in fotos
-            ],
+            "|".join(
+                [
+                    f"{getenv('AZURE_BLOB_URL')}/{getenv('AZURE_BLOB_CONTAINER_DENUNCIAS')}/{foto['nome']}"
+                    for foto in fotos
+                ]
+            ),
             0,
             request.token_id,
             "nao_resolvido",
@@ -133,7 +135,7 @@ class Denuncia:
                         "status": denuncia.status.value,
                         "id": denuncia.id,
                         "descricao": denuncia.descricao,
-                        "fotos": denuncia.fotos,
+                        "fotos": denuncia.fotos.split("|"),
                         "endereco": denuncia.endereco,
                         "numero_endereco": denuncia.numero_endereco,
                         "categoria": denuncia.categoria.value,
