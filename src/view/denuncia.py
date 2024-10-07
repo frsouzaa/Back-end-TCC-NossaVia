@@ -69,6 +69,7 @@ class Denuncia(FlaskView):
             "latitude": {"type": "string", "empty": True, "required": False},
             "longitude": {"type": "string", "empty": True, "required": False},
             "page": {"type": "string", "empty": False, "required": False},
+            "categoria": {"type": "string", "empty": False, "required": False},
         }
     )
     def get(self) -> Tuple[Dict[str, str], int]:

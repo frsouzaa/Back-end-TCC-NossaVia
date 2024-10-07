@@ -15,6 +15,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func
 from geoalchemy2 import Geography
 from sqlalchemy.sql.expression import cast
+from ..db.database import Categoria
 
 
 class Denuncia:
@@ -98,23 +99,29 @@ class Denuncia:
             page: int = int(request.args.get("page"))
             LIMIT: int = 10
             try:
-                denuncias = (
-                    db_session.query(
-                        DenunciaEntity.status,
-                        DenunciaEntity.id,
-                        DenunciaEntity.descricao,
-                        DenunciaEntity.fotos,
-                        DenunciaEntity.endereco,
-                        DenunciaEntity.numero_endereco,
-                        DenunciaEntity.categoria,
-                        UsuarioEntity.nome,
-                        UsuarioEntity.foto,
-                    )
-                    .join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
-                    .filter(
+                if v := request.args.get("categoria"):
+                    if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
+                        return {"msg": "categoria invalida"}, 409
+                teste = db_session.query(
+                    DenunciaEntity.status,
+                    DenunciaEntity.id,
+                    DenunciaEntity.descricao,
+                    DenunciaEntity.fotos,
+                    DenunciaEntity.endereco,
+                    DenunciaEntity.numero_endereco,
+                    DenunciaEntity.categoria,
+                    UsuarioEntity.nome,
+                    UsuarioEntity.foto,
+                ).join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
+                if request.args.get("categoria"):
+                    teste = teste.filter(
+                        DenunciaEntity.categoria == request.args.get("categoria"),
                         DenunciaEntity.delete == False,
                     )
-                    .order_by(
+                else:
+                    teste = teste.filter(DenunciaEntity.delete == False)
+                denuncias = (
+                    teste.order_by(
                         func.ST_Distance(
                             DenunciaEntity.geom,
                             cast(
@@ -124,7 +131,9 @@ class Denuncia:
                                 ),
                                 Geography,
                             ),
-                        )
+                        ),
+                        DenunciaEntity.qtd_curtidas.desc(),
+                        DenunciaEntity.criacao.desc(),
                     )
                     .offset(page * LIMIT)
                     .limit(LIMIT)
@@ -147,6 +156,7 @@ class Denuncia:
                 ], 200
             except:
                 return {"msg": "ocorreu um erro desconhecido"}, 520
+        return {"msg": "parametros invalidos"}, 409
 
     def put(self) -> Tuple[Dict[str, str], int]:
         request_json = request.get_json()
