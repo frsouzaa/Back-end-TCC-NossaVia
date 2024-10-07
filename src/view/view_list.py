@@ -4,6 +4,7 @@ from .usuario import Usuario
 from .denuncia import Denuncia
 from .versao import Versao
 from .alterar_senha import AlterarSenha
+from .minhas_denuncias import MinhasDenuncias
 
 
 class View_List():
@@ -15,5 +16,6 @@ class View_List():
             Usuario(),
             Denuncia(),
             Versao(),
-            AlterarSenha()
+            AlterarSenha(),
+            MinhasDenuncias()
         ]

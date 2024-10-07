@@ -96,8 +96,8 @@ class Denuncia:
             and request.args.get("longitude")
             and request.args.get("page") != None
         ):
-            page: int = int(request.args.get("page"))
             LIMIT: int = 10
+            page: int = int(request.args.get("page"))
             try:
                 if v := request.args.get("categoria"):
                     if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
@@ -140,19 +140,7 @@ class Denuncia:
                     .all()
                 )
                 return [
-                    {
-                        "status": denuncia.status.value,
-                        "id": denuncia.id,
-                        "descricao": denuncia.descricao,
-                        "fotos": denuncia.fotos.split("|"),
-                        "endereco": denuncia.endereco,
-                        "numero_endereco": denuncia.numero_endereco,
-                        "categoria": denuncia.categoria.value,
-                        "nome_usuario": denuncia.nome,
-                        "foto_usuario": denuncia.foto,
-                        "page": page,
-                    }
-                    for denuncia in denuncias
+                    self.denuncia_json_feed(denuncia, page) for denuncia in denuncias
                 ], 200
             except:
                 return {"msg": "ocorreu um erro desconhecido"}, 520
@@ -227,6 +215,40 @@ class Denuncia:
         except:
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
+    def minhas_denuncias(self) -> Tuple[List[Dict[str, str]], int]:
+        try:
+            LIMIT: int = 10
+            page: int = int(request.args.get("page"))
+            denuncias = (
+                db_session.query(
+                    DenunciaEntity.status,
+                    DenunciaEntity.id,
+                    DenunciaEntity.descricao,
+                    DenunciaEntity.fotos,
+                    DenunciaEntity.endereco,
+                    DenunciaEntity.numero_endereco,
+                    DenunciaEntity.categoria,
+                    UsuarioEntity.nome,
+                    UsuarioEntity.foto,
+                )
+                .join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
+                .filter(
+                    DenunciaEntity.usuario_id == request.token_id,
+                    DenunciaEntity.delete == False,
+                )
+                .order_by(
+                    DenunciaEntity.criacao.desc(),
+                )
+                .offset(page * LIMIT)
+                .limit(LIMIT)
+                .all()
+            )
+            return [
+                self.denuncia_json_feed(denuncia, page) for denuncia in denuncias
+            ], 200
+        except:
+            return {"msg": "ocorreu um erro desconhecido"}, 520
+
     def denuncia_json(self, denuncia: DenunciaEntity) -> Dict[str, str]:
         return {
             "id": denuncia.id,
@@ -243,4 +265,18 @@ class Denuncia:
             "fotos": denuncia.fotos,
             "qtd_curtidas": denuncia.qtd_curtidas,
             "status": denuncia.status.value,
+        }
+
+    def denuncia_json_feed(self, denuncia, page: int) -> Dict[str, str]:
+        return {
+            "status": denuncia.status.value,
+            "id": denuncia.id,
+            "descricao": denuncia.descricao,
+            "fotos": denuncia.fotos.split("|"),
+            "endereco": denuncia.endereco,
+            "numero_endereco": denuncia.numero_endereco,
+            "categoria": denuncia.categoria.value,
+            "nome_usuario": denuncia.nome,
+            "foto_usuario": denuncia.foto,
+            "page": page,
         }
