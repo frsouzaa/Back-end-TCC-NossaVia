@@ -102,10 +102,7 @@ class Denuncia:
             LIMIT: int = 10
             page: int = int(request.args.get("page"))
             try:
-                if v := request.args.get("categoria"):
-                    if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
-                        return {"msg": "categoria invalida"}, 409
-                teste = db_session.query(
+                query = db_session.query(
                     DenunciaEntity.status,
                     DenunciaEntity.id,
                     DenunciaEntity.descricao,
@@ -116,15 +113,17 @@ class Denuncia:
                     UsuarioEntity.nome,
                     UsuarioEntity.foto,
                 ).join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
-                if request.args.get("categoria"):
-                    teste = teste.filter(
-                        DenunciaEntity.categoria == request.args.get("categoria"),
+                if v := request.args.get("categoria"):
+                    if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
+                        return {"msg": "categoria invalida"}, 409
+                    query = query.filter(
+                        DenunciaEntity.categoria == v,
                         DenunciaEntity.delete == False,
                     )
                 else:
-                    teste = teste.filter(DenunciaEntity.delete == False)
+                    query = query.filter(DenunciaEntity.delete == False)
                 denuncias = (
-                    teste.order_by(
+                    query.order_by(
                         func.ST_Distance(
                             DenunciaEntity.geom,
                             cast(
@@ -225,24 +224,32 @@ class Denuncia:
         try:
             LIMIT: int = 10
             page: int = int(request.args.get("page"))
-            denuncias = (
-                db_session.query(
-                    DenunciaEntity.status,
-                    DenunciaEntity.id,
-                    DenunciaEntity.descricao,
-                    DenunciaEntity.fotos,
-                    DenunciaEntity.endereco,
-                    DenunciaEntity.numero_endereco,
-                    DenunciaEntity.categoria,
-                    UsuarioEntity.nome,
-                    UsuarioEntity.foto,
-                )
-                .join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
-                .filter(
+            query = db_session.query(
+                DenunciaEntity.status,
+                DenunciaEntity.id,
+                DenunciaEntity.descricao,
+                DenunciaEntity.fotos,
+                DenunciaEntity.endereco,
+                DenunciaEntity.numero_endereco,
+                DenunciaEntity.categoria,
+                UsuarioEntity.nome,
+                UsuarioEntity.foto,
+            ).join(UsuarioEntity, DenunciaEntity.usuario_id == UsuarioEntity.id)
+            if v := request.args.get("categoria"):
+                if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
+                    return {"msg": "categoria invalida"}, 409
+                query = query.filter(
+                    DenunciaEntity.categoria == v,
                     DenunciaEntity.usuario_id == request.token_id,
                     DenunciaEntity.delete == False,
                 )
-                .order_by(
+            else:
+                query = query.filter(
+                    DenunciaEntity.usuario_id == request.token_id,
+                    DenunciaEntity.delete == False,
+                )
+            denuncias = (
+                query.order_by(
                     DenunciaEntity.criacao.desc(),
                 )
                 .offset(page * LIMIT)

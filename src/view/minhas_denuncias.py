@@ -16,6 +16,7 @@ class MinhasDenuncias(FlaskView):
 
     @ValidarRequest(
         args={
+            "categoria": {"type": "string", "empty": False, "required": False},
             "page": {"type": "string", "empty": False, "required": False},
         }
     )
