@@ -276,7 +276,7 @@ class Denuncia:
             "cep": denuncia.cep,
             "latitude": denuncia.latitude,
             "longitude": denuncia.longitude,
-            "fotos": denuncia.fotos,
+            "fotos": denuncia.fotos.split("|"),
             "qtd_curtidas": denuncia.qtd_curtidas,
             "status": denuncia.status.value,
         }
