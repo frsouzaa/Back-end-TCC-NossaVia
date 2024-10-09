@@ -10,6 +10,7 @@ from uuid import uuid4
 from os import getenv
 import time
 from datetime import datetime
+import traceback
 
 
 class Usuario:
@@ -39,6 +40,7 @@ class Usuario:
                 return {"msg": "email ja cadastrado"}, 409
             if e.orig.pgcode == INVALID_TEXT_REPRESENTATION:
                 return {"msg": "sexo invalido"}, 409
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def get(self):
@@ -54,6 +56,7 @@ class Usuario:
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def put(self):
@@ -100,6 +103,7 @@ class Usuario:
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def delete(self):
@@ -120,6 +124,7 @@ class Usuario:
         except NoResultFound:
             return {"msg": "usuario nao encontrado"}, 404
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def usuario_json(self, usuario: UsuarioModel) -> Dict[str, str]:

@@ -16,6 +16,7 @@ from sqlalchemy import func
 from geoalchemy2 import Geography
 from sqlalchemy.sql.expression import cast
 from ..db.database import Categoria
+import traceback
 
 
 class Denuncia:
@@ -72,6 +73,7 @@ class Denuncia:
                 return {"msg": "categoria invalida"}, 409
             if isinstance(e.orig, ForeignKeyViolation):
                 return {"msg": "usuario inexistente"}, 409
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
         return {"msg": "criado"}, 201
 
@@ -90,6 +92,7 @@ class Denuncia:
             except NoResultFound:
                 return {"msg": "denuncia nao encontrada"}, 404
             except:
+                print(traceback.format_exc())
                 return {"msg": "ocorreu um erro desconhecido"}, 520
         if (
             request.args.get("latitude")
@@ -143,6 +146,7 @@ class Denuncia:
                     self.denuncia_json_feed(denuncia, page) for denuncia in denuncias
                 ], 200
             except:
+                print(traceback.format_exc())
                 return {"msg": "ocorreu um erro desconhecido"}, 520
         return {"msg": "parametros invalidos"}, 409
 
@@ -192,6 +196,7 @@ class Denuncia:
         except NoResultFound:
             return {"msg": "denuncia nao encontrada"}, 404
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def delete(self) -> Tuple[Dict[str, str], int]:
@@ -213,6 +218,7 @@ class Denuncia:
         except NoResultFound:
             return {"msg": "denuncia nao encontrada"}, 404
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def minhas_denuncias(self) -> Tuple[List[Dict[str, str]], int]:
@@ -247,6 +253,7 @@ class Denuncia:
                 self.denuncia_json_feed(denuncia, page) for denuncia in denuncias
             ], 200
         except:
+            print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
 
     def denuncia_json(self, denuncia: DenunciaEntity) -> Dict[str, str]:
