@@ -21,7 +21,7 @@ from dataclasses import dataclass
 import enum
 from geoalchemy2 import Geometry
 
-engine = create_engine(os.getenv("DB_URI"))
+engine = create_engine(os.getenv("DB_URI"), pool_size=20, max_overflow=40)
 db_session = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
