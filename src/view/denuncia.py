@@ -79,6 +79,7 @@ class Denuncia(FlaskView):
         {
             "descricao": {"type": "string", "empty": False, "required": False},
             "data": {"type": "string", "empty": False, "required": False},
+            "categoria": {"type": "string", "empty": False, "required": False},
             "endereco": {
                 "type": "string",
                 "empty": False,

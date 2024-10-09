@@ -167,6 +167,8 @@ class Denuncia:
                 denuncia.descricao = v
             if v := request_json.get("data"):
                 denuncia.data = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
+            if v:= request_json.get("categoria"):
+                denuncia.categoria = v
             if v := request_json.get("endereco"):
                 denuncia.endereco = v
             if v := request_json.get("numero_endereco"):
