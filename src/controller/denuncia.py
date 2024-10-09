@@ -9,10 +9,10 @@ from psycopg2.errors import (
 )
 from ..utils.azure import upload_blob
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, timedelta
 from os import getenv
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from geoalchemy2 import Geography
 from sqlalchemy.sql.expression import cast
 from ..db.database import Categoria
@@ -118,10 +118,17 @@ class Denuncia:
                         return {"msg": "categoria invalida"}, 409
                     query = query.filter(
                         DenunciaEntity.categoria == v,
-                        DenunciaEntity.delete == False,
                     )
-                else:
-                    query = query.filter(DenunciaEntity.delete == False)
+                query = query.filter(
+                    DenunciaEntity.delete == False,
+                    or_(
+                        DenunciaEntity.atualizacao_status
+                        > (datetime.now() - timedelta(weeks=1)).strftime(
+                            "%Y-%m-%d %H:%M:%S.%f"
+                        ),
+                        DenunciaEntity.status == "nao_resolvido",
+                    ),
+                )
                 denuncias = (
                     query.order_by(
                         func.ST_Distance(
@@ -167,7 +174,7 @@ class Denuncia:
                 denuncia.descricao = v
             if v := request_json.get("data"):
                 denuncia.data = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
-            if v:= request_json.get("categoria"):
+            if v := request_json.get("categoria"):
                 denuncia.categoria = v
             if v := request_json.get("endereco"):
                 denuncia.endereco = v
