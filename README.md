@@ -54,6 +54,14 @@ alembic revision --autogenerate -m "<DESCRICAO_MIGATION>"
 alembic upgrade head
 ```
 
+## Testes
+
+Para que os testes tenham uma comunicação com o DB mais fiel possivel com o ambiente produtivo, foi desenvolvido o script `run_tests.sh` para provisionar e desprovisionar um container Docker a partir de uma imagem Postgis. Basta rodar o comando a seguir e o resultado dos testes será exibido no terminal, a cobertura de testes estará disponível em HTML na pasta `./htmlcov`.
+
+```shell
+./run_tests.sh
+```
+
 ## Comando útil para manter a legibilidade do código de acordo com o [PEP8](https://peps.python.org/pep-0008/)
 
 ```shell
