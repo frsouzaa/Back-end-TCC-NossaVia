@@ -16,8 +16,8 @@ class Login:
         }
     )
     def post(self) -> Tuple[Dict[str, str] | str, int]:
-        request_json: Dict[str, str] = request.get_json()
         try:
+            request_json: Dict[str, str] = request.get_json()
             usuario = UsuarioModel.query.filter(
                 UsuarioModel.email == request_json["email"],
                 UsuarioModel.delete == False,

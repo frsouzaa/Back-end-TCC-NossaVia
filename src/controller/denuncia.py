@@ -22,42 +22,39 @@ import traceback
 class Denuncia:
 
     def post(self) -> Tuple[Dict[str, str], int]:
-        fotos: List[Dict[str, str]] = [
-            {"nome": f"imagem_{uuid4()}.jpg", "base64": foto}
-            for foto in request.json.get("fotos")
-        ]
         try:
+            fotos: List[Dict[str, str]] = [
+                {"nome": f"imagem_{uuid4()}.jpg", "base64": foto}
+                for foto in request.json.get("fotos")
+            ]
             data = datetime.strptime(request.json.get("data"), "%Y-%m-%d %H:%M:%S.%f")
-        except ValueError:
-            return {"msg": "data invalida"}, 409
-        denuncia: DenunciaEntity = DenunciaEntity(
-            request.json.get("descricao"),
-            request.json.get("categoria"),
-            data,
-            request.json.get("endereco"),
-            request.json.get("numero_endereco"),
-            request.json.get("ponto_referencia"),
-            request.json.get("cep"),
-            request.json.get("latitude"),
-            request.json.get("longitude"),
-            "|".join(
-                [
-                    f"{getenv('AZURE_BLOB_URL')}/{getenv('AZURE_BLOB_CONTAINER_DENUNCIAS')}/{foto['nome']}"
-                    for foto in fotos
-                ]
-            ),
-            0,
-            request.token_id,
-            "nao_resolvido",
-            None,
-            func.ST_SetSRID(
-                func.ST_MakePoint(
-                    request.json.get("longitude"), request.json.get("latitude")
+            denuncia: DenunciaEntity = DenunciaEntity(
+                request.json.get("descricao"),
+                request.json.get("categoria"),
+                data,
+                request.json.get("endereco"),
+                request.json.get("numero_endereco"),
+                request.json.get("ponto_referencia"),
+                request.json.get("cep"),
+                request.json.get("latitude"),
+                request.json.get("longitude"),
+                "|".join(
+                    [
+                        f"{getenv('AZURE_BLOB_URL')}/{getenv('AZURE_BLOB_CONTAINER_DENUNCIAS')}/{foto['nome']}"
+                        for foto in fotos
+                    ]
                 ),
-                4326,
-            ),
-        )
-        try:
+                0,
+                request.token_id,
+                "nao_resolvido",
+                None,
+                func.ST_SetSRID(
+                    func.ST_MakePoint(
+                        request.json.get("longitude"), request.json.get("latitude")
+                    ),
+                    4326,
+                ),
+            )
             db_session.add(denuncia)
             db_session.flush()
             for foto in fotos:
@@ -67,6 +64,9 @@ class Denuncia:
                     getenv("AZURE_BLOB_CONTAINER_DENUNCIAS"),
                 )
             db_session.commit()
+            return {"msg": "criado"}, 201
+        except ValueError:
+            return {"msg": "data invalida"}, 409
         except Exception as e:
             db_session.rollback()
             if isinstance(e.orig, InvalidTextRepresentation):
@@ -75,11 +75,12 @@ class Denuncia:
                 return {"msg": "usuario inexistente"}, 409
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
-        return {"msg": "criado"}, 201
+        finally:
+            db_session.remove()
 
     def get(self) -> Tuple[List[Dict[str, str]], int]:
-        if request.args.get("id"):
-            try:
+        try:
+            if request.args.get("id"):
                 denuncia = (
                     db_session.query(DenunciaEntity)
                     .filter(
@@ -89,19 +90,13 @@ class Denuncia:
                     .one()
                 )
                 return self.denuncia_json(denuncia), 200
-            except NoResultFound:
-                return {"msg": "denuncia nao encontrada"}, 404
-            except:
-                print(traceback.format_exc())
-                return {"msg": "ocorreu um erro desconhecido"}, 520
-        if (
-            request.args.get("latitude")
-            and request.args.get("longitude")
-            and request.args.get("page") != None
-        ):
-            LIMIT: int = 10
-            page: int = int(request.args.get("page"))
-            try:
+            if (
+                request.args.get("latitude")
+                and request.args.get("longitude")
+                and request.args.get("page") != None
+            ):
+                LIMIT: int = 10
+                page: int = int(request.args.get("page"))
                 query = db_session.query(
                     DenunciaEntity.status,
                     DenunciaEntity.id,
@@ -151,14 +146,18 @@ class Denuncia:
                 return [
                     self.denuncia_json_feed(denuncia, page) for denuncia in denuncias
                 ], 200
-            except:
-                print(traceback.format_exc())
-                return {"msg": "ocorreu um erro desconhecido"}, 520
-        return {"msg": "parametros invalidos"}, 409
+            return {"msg": "parametros invalidos"}, 409
+        except NoResultFound:
+            return {"msg": "denuncia nao encontrada"}, 404
+        except:
+            print(traceback.format_exc())
+            return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def put(self) -> Tuple[Dict[str, str], int]:
-        request_json = request.get_json()
         try:
+            request_json = request.get_json()
             denuncia = (
                 db_session.query(DenunciaEntity)
                 .filter(
@@ -206,6 +205,8 @@ class Denuncia:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def delete(self) -> Tuple[Dict[str, str], int]:
         try:
@@ -228,6 +229,8 @@ class Denuncia:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def minhas_denuncias(self) -> Tuple[List[Dict[str, str]], int]:
         try:
@@ -271,6 +274,8 @@ class Denuncia:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def denuncia_json(self, denuncia: DenunciaEntity) -> Dict[str, str]:
         return {

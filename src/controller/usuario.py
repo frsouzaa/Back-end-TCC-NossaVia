@@ -16,21 +16,21 @@ import traceback
 class Usuario:
 
     def post(self) -> Tuple[str, int]:
-        request_json: Dict[str, str] = request.get_json()
-        usuario: UsuarioModel = UsuarioModel(
-            request_json["nome"],
-            request_json["email"],
-            criptografar(request_json["senha"]),
-            request_json["endereco"],
-            request_json["numero_endereco"],
-            request_json["complemento_endereco"],
-            request_json["cep"],
-            datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"),
-            request_json["sexo"],
-            request_json["telefone"],
-            0,
-        )
         try:
+            request_json: Dict[str, str] = request.get_json()
+            usuario: UsuarioModel = UsuarioModel(
+                request_json["nome"],
+                request_json["email"],
+                criptografar(request_json["senha"]),
+                request_json["endereco"],
+                request_json["numero_endereco"],
+                request_json["complemento_endereco"],
+                request_json["cep"],
+                datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"),
+                request_json["sexo"],
+                request_json["telefone"],
+                0,
+            )
             db_session.add(usuario)
             db_session.commit()
             return {"msg": "criado"}, 201
@@ -42,6 +42,8 @@ class Usuario:
                 return {"msg": "sexo invalido"}, 409
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def get(self):
         try:
@@ -58,6 +60,8 @@ class Usuario:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def put(self):
         try:
@@ -105,6 +109,8 @@ class Usuario:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def delete(self):
         try:
@@ -126,6 +132,8 @@ class Usuario:
         except:
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def usuario_json(self, usuario: UsuarioModel) -> Dict[str, str]:
         return {
