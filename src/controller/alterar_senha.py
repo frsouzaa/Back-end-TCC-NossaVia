@@ -9,7 +9,7 @@ import traceback
 
 class AlterarSenha:
 
-    def post(self) -> Tuple[Dict[str, str] | str, int]:
+    def put(self) -> Tuple[Dict[str, str] | str, int]:
         request_json: Dict[str, str] = request.get_json()
         try:
             usuario = Usuario.query.filter(
@@ -28,3 +28,5 @@ class AlterarSenha:
             db_session.rollback()
             print(traceback.format_exc())
             return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()

@@ -8,11 +8,11 @@ from ..decorators.validar_token import ValidarToken
 
 class AlterarSenha(FlaskView):
     rota: str = "/alterar-senha"
-    methods: List[str] = ["post"]
+    methods: List[str] = ["put"]
     name: str = __name__
 
     def dispatch_request(self) -> Response:
-        return self.post()
+        return self.put()
 
     @ValidarRequest(
         {
@@ -21,5 +21,5 @@ class AlterarSenha(FlaskView):
         }
     )
     @ValidarToken()
-    def post(self) -> Tuple[Dict[str, str], int]:
-        return AlterarSenhaController().post()
+    def put(self) -> Tuple[Dict[str, str], int]:
+        return AlterarSenhaController().put()

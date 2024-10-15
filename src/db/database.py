@@ -83,6 +83,22 @@ class Usuario(Base):
         self.pontucao = pontucao
 
 
+class RecuperarSenha(Base):
+    __tablename__: str = "recuperar_senha"
+
+    id: int = Column(BigInteger, primary_key=True)
+    criacao: str = Column(DateTime, default=func.now(), nullable=False)
+    modificacao: str = Column(DateTime, default=func.now(), nullable=False)
+    delete: bool = Column(Boolean, default=False, nullable=False)
+
+    token: str = Column(String(200), nullable=False)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
+
+    def __init__(self, token: str, usuario_id: int) -> None:
+        self.token = token
+        self.usuario_id = usuario_id
+
+
 class Categoria(enum.Enum):
     via = "via"
     calcada = "calcada"
@@ -91,7 +107,7 @@ class Categoria(enum.Enum):
     carro = "carro"
     sinalizacao = "sinalizacao"
     outros = "outros"
-    
+
 
 class Status(enum.Enum):
     resolvido = "resolvido"
