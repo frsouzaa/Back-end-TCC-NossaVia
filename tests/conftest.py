@@ -68,6 +68,11 @@ def client(app):
     return app.app.test_client()
 
 
+@pytest.fixture(scope="session")
+def database_session():
+    return db_session
+
+
 @pytest.fixture(scope="function")
 def login(client):
     def logar(email: str, senha: str):

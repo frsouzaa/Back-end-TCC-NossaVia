@@ -29,6 +29,7 @@ def test_put_usuario(monkeypatch, client, login):
             "sexo": "m",
             "telefone": "11 11111-1111",
             "foto": base64_string,
+            "complemento_endereco": "complemento",
         },
     )
     assert response.status_code == 200
