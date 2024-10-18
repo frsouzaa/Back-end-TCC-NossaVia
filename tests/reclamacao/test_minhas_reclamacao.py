@@ -1,7 +1,7 @@
-def test_get_minhas_denuncias(client, login):
+def test_get_minhas_reclamacoes(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.get(
-        "/minhas-denuncias?page=0",
+        "/minhas-reclamacoes?page=0",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
@@ -19,10 +19,10 @@ def test_get_minhas_denuncias(client, login):
             "status",
         ]
 
-def test_get_minhas_denuncias_com_categoria(client, login):
+def test_get_minhas_reclamacoes_com_categoria(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.get(
-        "/minhas-denuncias?page=0&categoria=via",
+        "/minhas-reclamacoes?page=0&categoria=via",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 200
@@ -40,10 +40,10 @@ def test_get_minhas_denuncias_com_categoria(client, login):
             "status",
         ]
 
-def test_get_minhas_denuncias_com_categoria_invalida(client, login):
+def test_get_minhas_reclamacoes_com_categoria_invalida(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.get(
-        "/minhas-denuncias?page=0&categoria=teste",
+        "/minhas-reclamacoes?page=0&categoria=teste",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 409

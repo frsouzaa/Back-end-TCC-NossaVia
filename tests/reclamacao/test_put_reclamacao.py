@@ -1,7 +1,7 @@
-def test_put_denuncia(client, login):
+def test_put_reclamacao(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
-        "/denuncia?id=11",
+        "/reclamacao?id=11",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",
@@ -34,10 +34,10 @@ def test_put_denuncia(client, login):
         "status"
     ]
 
-def test_put_denuncia_nao_encontrada(client, login):
+def test_put_reclamacao_nao_encontrada(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
-        "/denuncia?id=999",
+        "/reclamacao?id=999",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",
@@ -52,12 +52,12 @@ def test_put_denuncia_nao_encontrada(client, login):
         },
     )
     assert response.status_code == 404
-    assert response.json == {"msg": "denuncia nao encontrada"}
+    assert response.json == {"msg": "reclamacao nao encontrada"}
 
-def test_put_denuncia_sem_body(client, login):
+def test_put_reclamacao_sem_body(client, login):
     token = login("email_10@teste.com", "senha_10")
     response = client.put(
-        "/denuncia?id=11",
+        "/reclamacao?id=11",
         headers={"Authorization": f"Bearer {token}"},
         json={}
     )

@@ -1,13 +1,13 @@
 from flask.views import View as FlaskView
 from flask import Response, request
 from typing import List, Tuple, Dict
-from ..controller.denuncia import Denuncia as DenunciaController
+from ..controller.reclamacao import Reclamacao as ReclamacaoController
 from ..decorators.validar_token import ValidarToken
 from ..decorators.validar_request import ValidarRequest
 
 
-class Denuncia(FlaskView):
-    rota: str = "/denuncia"
+class Reclamacao(FlaskView):
+    rota: str = "/reclamacao"
     methods: List[str] = ["post", "get", "put", "delete"]
     name: str = __name__
 
@@ -61,7 +61,7 @@ class Denuncia(FlaskView):
     )
     @ValidarToken()
     def post(self) -> Tuple[Dict[str, str], int]:
-        return DenunciaController().post()
+        return ReclamacaoController().post()
 
     @ValidarRequest(
         args={
@@ -73,7 +73,7 @@ class Denuncia(FlaskView):
         }
     )
     def get(self) -> Tuple[Dict[str, str], int]:
-        return DenunciaController().get()
+        return ReclamacaoController().get()
 
     @ValidarRequest(
         {
@@ -113,7 +113,7 @@ class Denuncia(FlaskView):
     )
     @ValidarToken()
     def put(self) -> Tuple[Dict[str, str], int]:
-        return DenunciaController().put()
+        return ReclamacaoController().put()
 
     @ValidarRequest(
         args={
@@ -122,4 +122,4 @@ class Denuncia(FlaskView):
     )
     @ValidarToken()
     def delete(self) -> Tuple[Dict[str, str], int]:
-        return DenunciaController().delete()
+        return ReclamacaoController().delete()

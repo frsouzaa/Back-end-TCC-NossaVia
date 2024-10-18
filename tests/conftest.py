@@ -2,7 +2,7 @@ import pytest
 from app import App
 from datetime import datetime
 from src.utils.senha import criptografar
-from src.db.database import db_session, Usuario, Base, engine, Denuncia
+from src.db.database import db_session, Usuario, Base, engine, Reclamacao
 from unittest import mock
 import os
 from src.utils.jwt import gerar as gerar_token
@@ -30,7 +30,7 @@ def pytest_sessionstart(session):
     for i in range(11):
         latitude = i
         longitude = i
-        denuncia: Denuncia = Denuncia(
+        reclamacao: Reclamacao = Reclamacao(
             f"descricao_{i}",
             "via",
             "2024-10-03 19:47:00.000000",
@@ -47,7 +47,7 @@ def pytest_sessionstart(session):
             None,
             func.ST_SetSRID(func.ST_MakePoint(longitude, latitude), 4326),
         )
-        db_session.add(denuncia)
+        db_session.add(reclamacao)
     db_session.commit()
 
 

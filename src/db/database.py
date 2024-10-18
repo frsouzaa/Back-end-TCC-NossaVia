@@ -115,8 +115,8 @@ class Status(enum.Enum):
 
 
 @dataclass
-class Denuncia(Base):
-    __tablename__: str = "denuncia"
+class Reclamacao(Base):
+    __tablename__: str = "reclamacao"
 
     id: int = Column(BigInteger, primary_key=True)
     criacao: str = Column(DateTime, default=func.now(), nullable=False)

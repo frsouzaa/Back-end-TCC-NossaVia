@@ -3,7 +3,7 @@ from src.utils.jwt import gerar as gerar_token
 from azure.storage.blob import BlobClient
 
 
-def test_post_denuncia(monkeypatch, client, login):
+def test_post_reclamacao(monkeypatch, client, login):
     def upload_blob_mock(self, image_data, blob_type):
         return None
 
@@ -17,7 +17,7 @@ def test_post_denuncia(monkeypatch, client, login):
 
     token = login("email_10@teste.com", "senha_10")
     response = client.post(
-        "/denuncia",
+        "/reclamacao",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",
@@ -36,7 +36,7 @@ def test_post_denuncia(monkeypatch, client, login):
     assert response.json == {"msg": "criado"}
 
 
-def test_post_denuncia_categoria_invalida(client, login):
+def test_post_reclamacao_categoria_invalida(client, login):
     image_path = "tests/assets/foto_usuario.png"
     with open(image_path, "rb") as image_file:
         image_data = image_file.read()
@@ -45,7 +45,7 @@ def test_post_denuncia_categoria_invalida(client, login):
 
     token = login("email_10@teste.com", "senha_10")
     response = client.post(
-        "/denuncia",
+        "/reclamacao",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",
@@ -64,7 +64,7 @@ def test_post_denuncia_categoria_invalida(client, login):
     assert response.json == {"msg": "categoria invalida"}
 
 
-def test_post_denuncia_data_invalida(client, login):
+def test_post_reclamacao_data_invalida(client, login):
     image_path = "tests/assets/foto_usuario.png"
     with open(image_path, "rb") as image_file:
         image_data = image_file.read()
@@ -73,7 +73,7 @@ def test_post_denuncia_data_invalida(client, login):
 
     token = login("email_10@teste.com", "senha_10")
     response = client.post(
-        "/denuncia",
+        "/reclamacao",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",
@@ -92,7 +92,7 @@ def test_post_denuncia_data_invalida(client, login):
     assert response.json == {"msg": "data invalida"}
 
 
-def test_post_denuncia_usuario_inexistente(client, login):
+def test_post_reclamacao_usuario_inexistente(client, login):
     image_path = "tests/assets/foto_usuario.png"
     with open(image_path, "rb") as image_file:
         image_data = image_file.read()
@@ -101,7 +101,7 @@ def test_post_denuncia_usuario_inexistente(client, login):
 
     token = gerar_token({"id": "9999"})
     response = client.post(
-        "/denuncia",
+        "/reclamacao",
         headers={"Authorization": f"Bearer {token}"},
         json={
             "descricao": "descricao teste",

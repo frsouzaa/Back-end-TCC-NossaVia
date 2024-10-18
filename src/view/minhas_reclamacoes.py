@@ -1,13 +1,13 @@
 from flask.views import View as FlaskView
 from flask import Response
 from typing import List, Tuple, Dict
-from ..controller.denuncia import Denuncia as DenunciaController
+from ..controller.reclamacao import Reclamacao as ReclamacaoController
 from ..decorators.validar_token import ValidarToken
 from ..decorators.validar_request import ValidarRequest
 
 
-class MinhasDenuncias(FlaskView):
-    rota: str = "/minhas-denuncias"
+class MinhasReclamacaos(FlaskView):
+    rota: str = "/minhas-reclamacoes"
     methods: List[str] = ["get"]
     name: str = __name__
 
@@ -22,4 +22,4 @@ class MinhasDenuncias(FlaskView):
     )
     @ValidarToken()
     def get(self) -> Tuple[Dict[str, str], int]:
-        return DenunciaController().minhas_denuncias()
+        return ReclamacaoController().minhas_reclamacoes()

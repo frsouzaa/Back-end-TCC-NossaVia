@@ -7,7 +7,7 @@ def test_carrega_variaveis_de_ambiente():
     assert os.environ["JWT_KEY"]
     assert os.environ["AZURE_CONNECTION_STRING"]
     assert os.environ["AZURE_BLOB_CONTAINER_USUARIOS"]
-    assert os.environ["AZURE_BLOB_CONTAINER_DENUNCIAS"]
+    assert os.environ["AZURE_BLOB_CONTAINER_RECLAMACOES"]
     assert os.environ["AZURE_BLOB_URL"]
     assert os.environ["PORT"]
 

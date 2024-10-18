@@ -1,10 +1,10 @@
 from typing import List
 from .login import Login
 from .usuario import Usuario
-from .denuncia import Denuncia
+from .reclamacao import Reclamacao
 from .versao import Versao
 from .alterar_senha import AlterarSenha
-from .minhas_denuncias import MinhasDenuncias
+from .minhas_reclamacoes import MinhasReclamacaos
 from .recuperar_senha import RecuperarSenha
 
 
@@ -15,9 +15,9 @@ class View_List():
         self.list = [
             Login(),
             Usuario(),
-            Denuncia(),
+            Reclamacao(),
             Versao(),
             AlterarSenha(),
-            MinhasDenuncias(),
+            MinhasReclamacaos(),
             RecuperarSenha()
         ]

@@ -22,7 +22,7 @@ pip install -r requirements.txt
 | `JWT_KEY`                 | Chave para geração e validação de JWT |
 | `AZURE_CONNECTION_STRING` | String de conexão da Azure |
 | `AZURE_BLOB_CONTAINER_USUARIOS`     | Nome do blob container para armazenar as fotos dos usuários |
-| `AZURE_BLOB_CONTAINER_DENUNCIAS`    | Nome do blob container para armazenar as imagens das denúncias |
+| `AZURE_BLOB_CONTAINER_RECLAMACOES`    | Nome do blob container para armazenar as imagens das denúncias |
 | `AZURE_BLOB_URL`          | Link do storage account |
 | `PORT`                    | Porta em que a aplicaçã vai rodar |
 
