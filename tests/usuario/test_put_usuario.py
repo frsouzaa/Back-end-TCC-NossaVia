@@ -25,6 +25,9 @@ def test_put_usuario(monkeypatch, client, login):
             "cep": "00000-000",
             "numero_endereco": "0",
             "complemento_endereco": "",
+            "bairro": "bairro teste",
+            "cidade": "cidade teste",
+            "estado": "RJ",
             "data_nascimento": "2004-06-15 00:00:00.000000",
             "sexo": "m",
             "telefone": "11 11111-1111",
@@ -34,11 +37,15 @@ def test_put_usuario(monkeypatch, client, login):
     )
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "cep",
+        "cidade",
         "complemento_endereco",
+        "cpf",
         "data_nascimento",
         "email",
         "endereco",
+        "estado",
         "foto",
         "nome",
         "numero_endereco",
@@ -67,11 +74,15 @@ def test_put_usuario_sem_foto(client, login):
     )
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "cep",
+        "cidade",
         "complemento_endereco",
+        "cpf",
         "data_nascimento",
         "email",
         "endereco",
+        "estado",
         "foto",
         "nome",
         "numero_endereco",

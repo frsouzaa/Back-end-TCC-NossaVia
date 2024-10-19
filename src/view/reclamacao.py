@@ -26,6 +26,12 @@ class Reclamacao(FlaskView):
             "descricao": {"type": "string", "empty": False, "required": True},
             "categoria": {"type": "string", "empty": False, "required": True},
             "data": {"type": "string", "empty": False, "required": True},
+            "cep": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
             "endereco": {
                 "type": "string",
                 "empty": False,
@@ -43,7 +49,19 @@ class Reclamacao(FlaskView):
                 "required": False,
                 "nullable": True,
             },
-            "cep": {
+            "bairro": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "cidade": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "estado": {
                 "type": "string",
                 "empty": True,
                 "required": False,
@@ -80,6 +98,12 @@ class Reclamacao(FlaskView):
             "descricao": {"type": "string", "empty": False, "required": False},
             "data": {"type": "string", "empty": False, "required": False},
             "categoria": {"type": "string", "empty": False, "required": False},
+            "cep": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
             "endereco": {
                 "type": "string",
                 "empty": False,
@@ -97,7 +121,19 @@ class Reclamacao(FlaskView):
                 "required": False,
                 "nullable": True,
             },
-            "cep": {
+            "bairro": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "cidade": {
+                "type": "string",
+                "empty": True,
+                "required": False,
+                "nullable": True,
+            },
+            "estado": {
                 "type": "string",
                 "empty": True,
                 "required": False,

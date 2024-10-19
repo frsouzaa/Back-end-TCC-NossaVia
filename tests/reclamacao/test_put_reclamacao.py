@@ -11,6 +11,9 @@ def test_put_reclamacao(client, login):
             "numero_endereco": "123",
             "ponto_referencia": "perto do teste",
             "cep": "12345-123",
+            "bairro": "bairro teste",
+            "cidade": "cidade teste",
+            "estado": "AM",
             "latitude": "-1234567890",
             "longitude": "-1234567890",
             "status": "resolvido"
@@ -18,12 +21,15 @@ def test_put_reclamacao(client, login):
     )
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "categoria",
         "cep",
+        "cidade",
         "criacao",
         "data",
         "descricao",
         "endereco",
+        "estado",
         "fotos",
         "id",
         "latitude",
@@ -31,7 +37,7 @@ def test_put_reclamacao(client, login):
         "numero_endereco",
         "ponto_referencia",
         "qtd_curtidas",
-        "status"
+        "status",
     ]
 
 def test_put_reclamacao_nao_encontrada(client, login):

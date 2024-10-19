@@ -20,12 +20,16 @@ class Usuario:
             request_json: Dict[str, str] = request.get_json()
             usuario: UsuarioModel = UsuarioModel(
                 request_json["nome"],
+                request_json["cpf"],
                 request_json["email"],
                 criptografar(request_json["senha"]),
+                request_json["cep"],
                 request_json["endereco"],
                 request_json["numero_endereco"],
                 request_json["complemento_endereco"],
-                request_json["cep"],
+                request_json["bairro"],
+                request_json["cidade"],
+                request_json["estado"],
                 datetime.strptime(request_json["data_nascimento"], "%Y-%m-%d %H:%M:%S.%f"),
                 request_json["sexo"],
                 request_json["telefone"],
@@ -36,7 +40,9 @@ class Usuario:
             return {"msg": "criado"}, 201
         except Exception as e:
             db_session.rollback()
-            if e.orig.pgcode == UNIQUE_VIOLATION:
+            if "usuario_cpf_key" in e.orig.pgerror:
+                return {"msg": "cpf ja cadastrado"}, 409
+            if "usuario_email_key" in e.orig.pgerror:
                 return {"msg": "email ja cadastrado"}, 409
             if e.orig.pgcode == INVALID_TEXT_REPRESENTATION:
                 return {"msg": "sexo invalido"}, 409
@@ -77,14 +83,20 @@ class Usuario:
                 return {"msg": "nada foi alterado"}, 200
             if v := request_json.get("nome"):
                 usuario.nome = v
+            if v := request_json.get("cep"):
+                usuario.cep = v
             if v := request_json.get("endereco"):
                 usuario.endereco = v
             if v := request_json.get("numero_endereco"):
                 usuario.numero_endereco = v
             if v := request_json.get("complemento_endereco"):
                 usuario.complemento_endereco = v
-            if v := request_json.get("cep"):
-                usuario.cep = v
+            if v := request_json.get("bairro"):
+                usuario.bairro = v
+            if v := request_json.get("cidade"):
+                usuario.cidade = v
+            if v := request_json.get("estado"):
+                usuario.estado = v
             if v := request_json.get("data_nascimento"):
                 usuario.data_nascimento = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
             if v := request_json.get("sexo"):
@@ -138,11 +150,15 @@ class Usuario:
     def usuario_json(self, usuario: UsuarioModel) -> Dict[str, str]:
         return {
             "nome": usuario.nome,
+            "cpf": usuario.cpf,
             "email": usuario.email,
+            "cep": usuario.cep,
             "endereco": usuario.endereco,
             "numero_endereco": usuario.numero_endereco,
             "complemento_endereco": usuario.complemento_endereco,
-            "cep": usuario.cep,
+            "bairro": usuario.bairro,
+            "cidade": usuario.cidade,
+            "estado": usuario.estado.value,
             "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d %H:%M:%S:%f"),
             "sexo": usuario.sexo.value,
             "telefone": usuario.telefone,

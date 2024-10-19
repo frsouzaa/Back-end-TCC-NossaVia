@@ -6,11 +6,15 @@ def test_get_usuario(client, login):
     response = client.get("/usuario", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "cep",
+        "cidade",
         "complemento_endereco",
+        "cpf",
         "data_nascimento",
         "email",
         "endereco",
+        "estado",
         "foto",
         "nome",
         "numero_endereco",

@@ -32,10 +32,13 @@ class Reclamacao:
                 request.json.get("descricao"),
                 request.json.get("categoria"),
                 data,
+                request.json.get("cep"),
                 request.json.get("endereco"),
                 request.json.get("numero_endereco"),
                 request.json.get("ponto_referencia"),
-                request.json.get("cep"),
+                request.json.get("bairro"),
+                request.json.get("cidade"),
+                request.json.get("estado"),
                 request.json.get("latitude"),
                 request.json.get("longitude"),
                 "|".join(
@@ -175,14 +178,20 @@ class Reclamacao:
                 reclamacao.data = datetime.strptime(v, "%Y-%m-%d %H:%M:%S.%f")
             if v := request_json.get("categoria"):
                 reclamacao.categoria = v
+            if v := request_json.get("cep"):
+                reclamacao.cep = v
             if v := request_json.get("endereco"):
                 reclamacao.endereco = v
             if v := request_json.get("numero_endereco"):
                 reclamacao.numero_endereco = v
             if v := request_json.get("ponto_referencia"):
                 reclamacao.ponto_referencia = v
-            if v := request_json.get("cep"):
-                reclamacao.cep = v
+            if v := request_json.get("bairro"):
+                reclamacao.bairro = v
+            if v := request_json.get("cidade"):
+                reclamacao.cidade = v
+            if v := request_json.get("estado"):
+                reclamacao.estado = v
             if v := request_json.get("latitude"):
                 reclamacao.latitude = v
             if v := request_json.get("longitude"):
@@ -284,10 +293,13 @@ class Reclamacao:
             "descricao": reclamacao.descricao,
             "categoria": reclamacao.categoria.value,
             "data": reclamacao.data,
+            "cep": reclamacao.cep,
             "endereco": reclamacao.endereco,
             "numero_endereco": reclamacao.numero_endereco,
             "ponto_referencia": reclamacao.ponto_referencia,
-            "cep": reclamacao.cep,
+            "bairro": reclamacao.bairro,
+            "cidade": reclamacao.cidade,
+            "estado": reclamacao.estado.value,
             "latitude": reclamacao.latitude,
             "longitude": reclamacao.longitude,
             "fotos": reclamacao.fotos.split("|"),

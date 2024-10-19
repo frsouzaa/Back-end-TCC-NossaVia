@@ -24,8 +24,10 @@ class Usuario(FlaskView):
     @ValidarRequest(
         {
             "nome": {"type": "string", "empty": False, "required": True},
+            "cpf": {"type": "string", "empty": False, "required": True},
             "email": {"type": "string", "empty": False, "required": True},
             "senha": {"type": "string", "empty": False, "required": True},
+            "cep": {"type": "string", "empty": False, "required": True},
             "endereco": {"type": "string", "empty": False, "required": True},
             "numero_endereco": {
                 "type": "string",
@@ -39,7 +41,9 @@ class Usuario(FlaskView):
                 "required": False,
                 "nullable": True,
             },
-            "cep": {"type": "string", "empty": False, "required": True},
+            "bairro": {"type": "string", "empty": False, "required": True},
+            "cidade": {"type": "string", "empty": False, "required": True},
+            "estado": {"type": "string", "empty": False, "required": True},
             "data_nascimento": {"type": "string", "empty": False, "required": True},
             "sexo": {"type": "string", "empty": False, "required": True},
             "telefone": {"type": "string", "empty": False, "required": True},
@@ -55,6 +59,7 @@ class Usuario(FlaskView):
     @ValidarRequest(
         {
             "nome": {"type": "string", "empty": False, "required": False},
+            "cep": {"type": "string", "empty": False, "required": False},
             "endereco": {"type": "string", "empty": False, "required": False},
             "numero_endereco": {
                 "type": "string",
@@ -68,7 +73,9 @@ class Usuario(FlaskView):
                 "required": False,
                 "nullable": True,
             },
-            "cep": {"type": "string", "empty": False, "required": False},
+            "bairro": {"type": "string", "empty": False, "required": False},
+            "cidade": {"type": "string", "empty": False, "required": False},
+            "estado": {"type": "string", "empty": False, "required": False},
             "data_nascimento": {"type": "string", "empty": False, "required": False},
             "sexo": {"type": "string", "empty": False, "required": False},
             "telefone": {"type": "string", "empty": False, "required": False},

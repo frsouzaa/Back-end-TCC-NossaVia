@@ -2,12 +2,15 @@ def test_get_reclamacao_id(client):
     response = client.get("/reclamacao?id=2")
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "categoria",
         "cep",
+        "cidade",
         "criacao",
         "data",
         "descricao",
         "endereco",
+        "estado",
         "fotos",
         "id",
         "latitude",

@@ -34,6 +34,36 @@ class Sexo(enum.Enum):
     n = "n"
 
 
+class Estado(enum.Enum):
+    AC = "AC"
+    AL = "AL"
+    AP = "AP"
+    AM = "AM"
+    BA = "BA"
+    CE = "CE"
+    DF = "DF"
+    ES = "ES"
+    GO = "GO"
+    MA = "MA"
+    MT = "MT"
+    MS = "MS"
+    MG = "MG"
+    PA = "PA"
+    PB = "PB"
+    PR = "PR"
+    PE = "PE"
+    PI = "PI"
+    RJ = "RJ"
+    RN = "RN"
+    RS = "RS"
+    RO = "RO"
+    RR = "RR"
+    SC = "SC"
+    SP = "SP"
+    SE = "SE"
+    TO = "TO"
+
+
 @dataclass
 class Usuario(Base):
     __tablename__: str = "usuario"
@@ -44,12 +74,16 @@ class Usuario(Base):
     delete: bool = Column(Boolean, default=False, nullable=False)
 
     nome: str = Column(String(200), nullable=False)
+    cpf: str = Column(String(50), unique=True, nullable=False)
     email: str = Column(String(200), unique=True, nullable=False)
     senha: str = Column(String(200), nullable=False)
+    cep: str = Column(String(20), nullable=False)
     endereco: str = Column(String(200), nullable=False)
     numero_endereco: str = Column(String(200), nullable=True)
     complemento_endereco: str = Column(String(200), nullable=True)
-    cep: str = Column(String(20), nullable=False)
+    bairro: str = Column(String(200), nullable=False)
+    cidade: str = Column(String(200), nullable=False)
+    estado: str = Column(Enum(Estado), nullable=False)
     data_nascimento: str = Column(DateTime, nullable=False)
     sexo: str = Column(Enum(Sexo), nullable=False)
     telefone: str = Column(String(20), nullable=False)
@@ -59,24 +93,32 @@ class Usuario(Base):
     def __init__(
         self,
         nome: str,
+        cpf: str,
         email: str,
         senha: str,
+        cep: str,
         endereco: str,
         numero_endereco: str,
         complemento_endereco: str,
-        cep: str,
+        bairro: str,
+        cidade: str,
+        estado: str,
         data_nascimento: str,
         sexo: str,
         telefone: str,
         pontucao: int,
     ) -> None:
         self.nome = nome
+        self.cpf = cpf
         self.email = email
         self.senha = senha
+        self.cep = cep
         self.endereco = endereco
         self.numero_endereco = numero_endereco
         self.complemento_endereco = complemento_endereco
-        self.cep = cep
+        self.bairro = bairro
+        self.cidade = cidade
+        self.estado = estado
         self.data_nascimento = data_nascimento
         self.sexo = sexo
         self.telefone = telefone
@@ -126,10 +168,13 @@ class Reclamacao(Base):
     descricao: str = Column(String(500), nullable=False)
     categoria: str = Column(Enum(Categoria), nullable=False)
     data: str = Column(DateTime, nullable=False)
+    cep: str = Column(String(20), nullable=True)
     endereco: str = Column(String(200), nullable=False)
     numero_endereco: str = Column(String(200), nullable=True)
     ponto_referencia: str = Column(String(200), nullable=True)
-    cep: str = Column(String(20), nullable=True)
+    bairro: str = Column(String(200), nullable=True)
+    cidade: str = Column(String(200), nullable=True)
+    estado: str = Column(Enum(Estado), nullable=True)
     latitude: str = Column(String(200), nullable=False)
     longitude: str = Column(String(200), nullable=False)
     fotos: str = Column(String(2000), nullable=False)
@@ -145,10 +190,13 @@ class Reclamacao(Base):
         descricao: str,
         categoria: str,
         data: str,
+        cep: str,
         endereco: str,
         numero_endereco: str,
         ponto_referencia: str,
-        cep: str,
+        bairro: str,
+        cidade: str,
+        estado: str,
         latitude: str,
         longitude: str,
         fotos: str,
@@ -161,10 +209,13 @@ class Reclamacao(Base):
         self.descricao = descricao
         self.categoria = categoria
         self.data = data
+        self.cep = cep
         self.endereco = endereco
         self.numero_endereco = numero_endereco
         self.ponto_referencia = ponto_referencia
-        self.cep = cep
+        self.bairro = bairro
+        self.cidade = cidade
+        self.estado = estado
         self.latitude = latitude
         self.longitude = longitude
         self.fotos = fotos
