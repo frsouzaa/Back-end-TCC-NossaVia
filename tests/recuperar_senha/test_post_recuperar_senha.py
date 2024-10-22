@@ -33,5 +33,5 @@ def test_post_recuperar_senha_erro_email_nao_encontrado(client):
 def test_post_recuperar_senha_erro_ao_enviar_email(client):
     with mock.patch.dict(os.environ, {"EMAIL": "", "SENHA": ""}):
         response = client.post("/recuperar-senha", json={"email": "email_9@teste.com"})
-        assert response.status_code == 409
+        assert response.status_code == 520
         assert response.json == {"msg": "nao foi possivel enviar o email nesse momento"}

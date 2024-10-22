@@ -53,7 +53,7 @@ class RecuperarSenha:
             )
             if not res:
                 db_session.rollback()
-                return {"msg": "nao foi possivel enviar o email nesse momento"}, 409
+                return {"msg": "nao foi possivel enviar o email nesse momento"}, 520
             db_session.commit()
             return {"msg": "token gerado"}, 200
         except Exception as e:
@@ -75,7 +75,7 @@ class RecuperarSenha:
                 .filter(
                     RecuperarSenhaEntity.token == request_json["token"],
                     RecuperarSenhaEntity.criacao
-                    > (datetime.now() - timedelta(minutes=30)).strftime(
+                    > (datetime.now() - timedelta(minutes=15)).strftime(
                         "%Y-%m-%d %H:%M:%S.%f"
                     ),
                     RecuperarSenhaEntity.delete == False,
