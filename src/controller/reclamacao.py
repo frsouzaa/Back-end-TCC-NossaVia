@@ -13,8 +13,6 @@ from datetime import datetime, timedelta
 from os import getenv
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func, or_
-from geoalchemy2 import Geography
-from sqlalchemy.sql.expression import cast
 from ..db.database import Categoria
 import traceback
 
@@ -130,13 +128,10 @@ class Reclamacao:
                 reclamacoes = (
                     query.order_by(
                         func.ST_Distance(
-                            ReclamacaoEntity.geom,
-                            cast(
-                                func.ST_MakePoint(
-                                    float(request.args.get("longitude")),
-                                    float(request.args.get("latitude")),
-                                ),
-                                Geography,
+                            ReclamacaoEntity.geog,
+                            func.ST_MakePoint(
+                                float(request.args.get("longitude")),
+                                float(request.args.get("latitude")),
                             ),
                         ),
                         ReclamacaoEntity.qtd_curtidas.desc(),
@@ -147,7 +142,8 @@ class Reclamacao:
                     .all()
                 )
                 return [
-                    self.reclamacao_json_feed(reclamacao, page) for reclamacao in reclamacoes
+                    self.reclamacao_json_feed(reclamacao, page)
+                    for reclamacao in reclamacoes
                 ], 200
             return {"msg": "parametros invalidos"}, 409
         except NoResultFound:
@@ -197,7 +193,7 @@ class Reclamacao:
             if v := request_json.get("longitude"):
                 reclamacao.longitude = v
             if request_json.get("longitude") or request_json.get("latitude"):
-                reclamacao.geom = func.ST_SetSRID(
+                reclamacao.geog = func.ST_SetSRID(
                     func.ST_MakePoint(
                         request_json.get("longitude"), request_json.get("latitude")
                     ),
@@ -278,7 +274,8 @@ class Reclamacao:
                 .all()
             )
             return [
-                self.reclamacao_json_feed(reclamacao, page) for reclamacao in reclamacoes
+                self.reclamacao_json_feed(reclamacao, page)
+                for reclamacao in reclamacoes
             ], 200
         except:
             print(traceback.format_exc())
