@@ -6,9 +6,10 @@ from .versao import Versao
 from .alterar_senha import AlterarSenha
 from .minhas_reclamacoes import MinhasReclamacaos
 from .recuperar_senha import RecuperarSenha
+from .reclamacoes_proximas import ReclamacoesProximas
 
 
-class View_List():
+class View_List:
     list: List
 
     def __init__(self) -> None:
@@ -19,5 +20,6 @@ class View_List():
             Versao(),
             AlterarSenha(),
             MinhasReclamacaos(),
-            RecuperarSenha()
+            RecuperarSenha(),
+            ReclamacoesProximas(),
         ]

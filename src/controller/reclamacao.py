@@ -283,6 +283,64 @@ class Reclamacao:
         finally:
             db_session.remove()
 
+    def reclamacoes_proximas(self) -> Tuple[List[Dict[str, str]], int]:
+        try:
+            LIMIT: int = 10
+            page: int = int(request.args.get("page"))
+            reclamacoes = (
+                db_session.query(
+                    ReclamacaoEntity.status,
+                    ReclamacaoEntity.id,
+                    ReclamacaoEntity.descricao,
+                    ReclamacaoEntity.fotos,
+                    ReclamacaoEntity.endereco,
+                    ReclamacaoEntity.numero_endereco,
+                    ReclamacaoEntity.categoria,
+                    UsuarioEntity.nome,
+                    UsuarioEntity.foto,
+                )
+                .join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
+                .filter(
+                    ReclamacaoEntity.delete == False,
+                    ReclamacaoEntity.status == "nao_resolvido",
+                    ReclamacaoEntity.categoria == request.args.get("categoria"),
+                    func.ST_DWithin(
+                        ReclamacaoEntity.geog,
+                        func.ST_SetSRID(
+                            func.ST_MakePoint(
+                                float(request.args.get("longitude")),
+                                float(request.args.get("latitude")),
+                            ),
+                            4326,
+                        ),
+                        70,
+                    ),
+                )
+                .order_by(
+                    func.ST_Distance(
+                        ReclamacaoEntity.geog,
+                        func.ST_MakePoint(
+                            float(request.args.get("longitude")),
+                            float(request.args.get("latitude")),
+                        ),
+                    ),
+                    ReclamacaoEntity.qtd_curtidas.desc(),
+                    ReclamacaoEntity.criacao.desc(),
+                )
+                .offset(page * LIMIT)
+                .limit(LIMIT)
+                .all()
+            )
+            return [
+                self.reclamacao_json_feed(reclamacao, page)
+                for reclamacao in reclamacoes
+            ], 200
+        except:
+            print(traceback.format_exc())
+            return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
+
     def reclamacao_json(self, reclamacao: ReclamacaoEntity) -> Dict[str, str]:
         return {
             "id": reclamacao.id,
