@@ -8,9 +8,11 @@ from random import randint
 from ..utils.email import enviar
 from datetime import datetime, timedelta
 from ..utils.senha import criptografar
-
+from sqlalchemy.sql import exists
 
 class RecuperarSenha:
+    
+    TEMPO_TOKEN = 15
 
     def post(self) -> Tuple[Dict[str, str] | str, int]:
         try:
@@ -62,6 +64,36 @@ class RecuperarSenha:
             return {"msg": "ocorreu um erro desconhecido"}, 520
         finally:
             db_session.remove()
+            
+    def get(self) -> Tuple[Dict[str, str] | str, int]:
+        try:
+            dados = (
+                db_session.query(RecuperarSenhaEntity.token)
+                .join(
+                    UsuarioEntity,
+                    UsuarioEntity.id == RecuperarSenhaEntity.usuario_id,
+                )
+                .filter(
+                    RecuperarSenhaEntity.token == request.args.get("token"),
+                    RecuperarSenhaEntity.criacao
+                    > (datetime.now() - timedelta(minutes=self.TEMPO_TOKEN)).strftime(
+                        "%Y-%m-%d %H:%M:%S.%f"
+                    ),
+                    RecuperarSenhaEntity.delete == False,
+                    UsuarioEntity.email == request.args.get("email"),
+                    UsuarioEntity.delete == False,
+                )
+                .scalar()
+            )
+            if not dados:
+                return {"msg": "token ou email incorreto"}, 409
+            return {"msg": "token valido"}, 200
+        except Exception as e:
+            db_session.rollback()
+            print(traceback.format_exc())
+            return {"msg": "ocorreu um erro desconhecido"}, 520
+        finally:
+            db_session.remove()
 
     def put(self) -> Tuple[Dict[str, str] | str, int]:
         request_json: Dict[str, str] = request.get_json()
@@ -75,7 +107,7 @@ class RecuperarSenha:
                 .filter(
                     RecuperarSenhaEntity.token == request_json["token"],
                     RecuperarSenhaEntity.criacao
-                    > (datetime.now() - timedelta(minutes=15)).strftime(
+                    > (datetime.now() - timedelta(minutes=self.TEMPO_TOKEN)).strftime(
                         "%Y-%m-%d %H:%M:%S.%f"
                     ),
                     RecuperarSenhaEntity.delete == False,
