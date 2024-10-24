@@ -83,14 +83,17 @@ class Reclamacao:
         try:
             if request.args.get("id"):
                 reclamacao = (
-                    db_session.query(ReclamacaoEntity)
+                    db_session.query(ReclamacaoEntity, UsuarioEntity)
+                    .join(
+                        UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id
+                    )
                     .filter(
                         ReclamacaoEntity.id == request.args.get("id"),
                         ReclamacaoEntity.delete == False,
                     )
                     .one()
                 )
-                return self.reclamacao_json(reclamacao), 200
+                return self.reclamacao_json(reclamacao[0], reclamacao[1]), 200
             if (
                 request.args.get("latitude")
                 and request.args.get("longitude")
@@ -204,7 +207,7 @@ class Reclamacao:
                 reclamacao.atualizacao_status = datetime.now()
             db_session.add(reclamacao)
             db_session.commit()
-            return self.reclamacao_json(reclamacao), 200
+            return self.reclamacao_json_editar(reclamacao), 200
         except NoResultFound:
             return {"msg": "reclamacao nao encontrada"}, 404
         except:
@@ -341,7 +344,32 @@ class Reclamacao:
         finally:
             db_session.remove()
 
-    def reclamacao_json(self, reclamacao: ReclamacaoEntity) -> Dict[str, str]:
+    def reclamacao_json(
+        self, reclamacao: ReclamacaoEntity, usuario: UsuarioEntity
+    ) -> Dict[str, str]:
+        return {
+            "id": reclamacao.id,
+            "criacao": reclamacao.criacao,
+            "descricao": reclamacao.descricao,
+            "categoria": reclamacao.categoria.value,
+            "data": reclamacao.data,
+            "cep": reclamacao.cep,
+            "endereco": reclamacao.endereco,
+            "numero_endereco": reclamacao.numero_endereco,
+            "ponto_referencia": reclamacao.ponto_referencia,
+            "bairro": reclamacao.bairro,
+            "cidade": reclamacao.cidade,
+            "estado": reclamacao.estado.value,
+            "latitude": reclamacao.latitude,
+            "longitude": reclamacao.longitude,
+            "fotos": reclamacao.fotos.split("|"),
+            "qtd_curtidas": reclamacao.qtd_curtidas,
+            "status": reclamacao.status.value,
+            "nome_usuario": usuario.nome,
+            "foto_usuario": usuario.foto,
+        }
+
+    def reclamacao_json_editar(self, reclamacao: ReclamacaoEntity) -> Dict[str, str]:
         return {
             "id": reclamacao.id,
             "criacao": reclamacao.criacao,
