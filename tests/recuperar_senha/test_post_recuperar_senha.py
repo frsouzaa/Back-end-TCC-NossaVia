@@ -17,14 +17,14 @@ def test_post_recuperar_senha(monkeypatch, client):
     monkeypatch.setattr(SMTP_SSL, "login", login_mock)
     monkeypatch.setattr(SMTP_SSL, "send_message", send_message_mock)
 
-    response = client.post("/recuperar-senha", json={"email": "email_9@teste.com"})
+    response = client.post("/recuperar-senha", json={"email": "email_7@teste.com"})
     assert response.status_code == 200
     assert response.json == {"msg": "token gerado"}
 
 
 def test_post_recuperar_senha_erro_email_nao_encontrado(client):
     response = client.post(
-        "/recuperar-senha", json={"email": "NAO_ENCONTRADO_email_9@teste.com"}
+        "/recuperar-senha", json={"email": "NAO_ENCONTRADO_email_7@teste.com"}
     )
     assert response.status_code == 409
     assert response.json == {"msg": "email nao encontrado"}
@@ -32,6 +32,6 @@ def test_post_recuperar_senha_erro_email_nao_encontrado(client):
 
 def test_post_recuperar_senha_erro_ao_enviar_email(client):
     with mock.patch.dict(os.environ, {"EMAIL": "", "SENHA": ""}):
-        response = client.post("/recuperar-senha", json={"email": "email_9@teste.com"})
+        response = client.post("/recuperar-senha", json={"email": "email_7@teste.com"})
         assert response.status_code == 520
         assert response.json == {"msg": "nao foi possivel enviar o email nesse momento"}

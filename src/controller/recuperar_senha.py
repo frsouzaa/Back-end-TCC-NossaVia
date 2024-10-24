@@ -7,12 +7,11 @@ import traceback
 from random import randint
 from ..utils.email import enviar
 from datetime import datetime, timedelta
-from ..utils.senha import criptografar
-from sqlalchemy.sql import exists
+from ..utils.senha import criptografar, descriptografar
 
 class RecuperarSenha:
     
-    TEMPO_TOKEN = 15
+    TEMPO_TOKEN = 150
 
     def post(self) -> Tuple[Dict[str, str] | str, int]:
         try:
@@ -43,15 +42,16 @@ class RecuperarSenha:
                 token.delete = True
                 token.modificacao = datetime.now()
                 db_session.add(token)
-            new_token = RecuperarSenhaEntity(
-                str(randint(100000, 999999)), usuario[0].id
+            token = str(randint(100000, 999999))
+            recuperar_senha = RecuperarSenhaEntity(
+                criptografar(token), usuario[0].id
             )
-            db_session.add(new_token)
+            db_session.add(recuperar_senha)
             db_session.flush()
             res = enviar(
                 request_json["email"],
                 "Recuperação de senha",
-                f"Seu token para recuperação de senha é: {new_token.token}",
+                f"Seu token para recuperação de senha é: {token}",
             )
             if not res:
                 db_session.rollback()
@@ -67,14 +67,13 @@ class RecuperarSenha:
             
     def get(self) -> Tuple[Dict[str, str] | str, int]:
         try:
-            dados = (
+            token = (
                 db_session.query(RecuperarSenhaEntity.token)
                 .join(
                     UsuarioEntity,
                     UsuarioEntity.id == RecuperarSenhaEntity.usuario_id,
                 )
                 .filter(
-                    RecuperarSenhaEntity.token == request.args.get("token"),
                     RecuperarSenhaEntity.criacao
                     > (datetime.now() - timedelta(minutes=self.TEMPO_TOKEN)).strftime(
                         "%Y-%m-%d %H:%M:%S.%f"
@@ -85,7 +84,7 @@ class RecuperarSenha:
                 )
                 .scalar()
             )
-            if not dados:
+            if not token or not descriptografar(request.args.get("token"), token):
                 return {"msg": "token ou email incorreto"}, 409
             return {"msg": "token valido"}, 200
         except Exception as e:
@@ -105,7 +104,6 @@ class RecuperarSenha:
                     RecuperarSenhaEntity.usuario_id == UsuarioEntity.id,
                 )
                 .filter(
-                    RecuperarSenhaEntity.token == request_json["token"],
                     RecuperarSenhaEntity.criacao
                     > (datetime.now() - timedelta(minutes=self.TEMPO_TOKEN)).strftime(
                         "%Y-%m-%d %H:%M:%S.%f"
@@ -114,15 +112,16 @@ class RecuperarSenha:
                     UsuarioEntity.email == request_json["email"],
                     UsuarioEntity.delete == False,
                 )
-                .all()
+                .one_or_none()
             )
-            if not dados:
+            if not dados or not descriptografar(request_json["token"], dados[1].token):
                 return {"msg": "token ou email incorreto"}, 400
-            dados[0][0].senha = criptografar(request_json["senhaNova"])
-            dados[0][0].modificacao = datetime.now()
-            dados[0][1].delete = True
-            dados[0][1].modificacao = datetime.now()
-            db_session.add(dados[0][1])
+            dados[0].senha = criptografar(request_json["senhaNova"])
+            dados[0].modificacao = datetime.now()
+            dados[1].delete = True
+            dados[1].modificacao = datetime.now()
+            db_session.add(dados[0])
+            db_session.add(dados[1])
             db_session.commit()
             return {"msg": "senha alterada"}, 200
         except Exception as e:

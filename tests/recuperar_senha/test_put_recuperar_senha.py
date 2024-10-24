@@ -1,8 +1,9 @@
 from src.db.database import RecuperarSenha
+from src.utils.senha import criptografar
 
 
 def test_put_recuperar_senha(client, database_session):
-    database_session.add(RecuperarSenha("123456", 10))
+    database_session.add(RecuperarSenha(criptografar("123456"), 10))
     response = client.put(
         "/recuperar-senha",
         json={
@@ -16,7 +17,7 @@ def test_put_recuperar_senha(client, database_session):
 
 
 def test_put_recuperar_senha_email_errado(client, database_session):
-    database_session.add(RecuperarSenha("123456", 10))
+    database_session.add(RecuperarSenha(criptografar("123456"), 10))
     response = client.put(
         "/recuperar-senha",
         json={
@@ -30,7 +31,6 @@ def test_put_recuperar_senha_email_errado(client, database_session):
 
 
 def test_put_recuperar_senha_token_errado(client, database_session):
-    database_session.add(RecuperarSenha("123456", 10))
     response = client.put(
         "/recuperar-senha",
         json={
