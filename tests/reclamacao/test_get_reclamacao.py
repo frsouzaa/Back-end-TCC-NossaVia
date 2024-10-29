@@ -38,6 +38,7 @@ def test_get_reclamacao(client):
             "nome_usuario",
             "numero_endereco",
             "page",
+            "qtd_curtidas",
             "status",
         ]
 
@@ -56,6 +57,7 @@ def test_get_reclamacao_sem_categoria(client):
             "nome_usuario",
             "numero_endereco",
             "page",
+            "qtd_curtidas",
             "status",
         ]
 

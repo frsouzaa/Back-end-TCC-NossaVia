@@ -109,6 +109,7 @@ class Reclamacao:
                     ReclamacaoEntity.endereco,
                     ReclamacaoEntity.numero_endereco,
                     ReclamacaoEntity.categoria,
+                    ReclamacaoEntity.qtd_curtidas,
                     UsuarioEntity.nome,
                     UsuarioEntity.foto,
                 ).join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
@@ -252,6 +253,7 @@ class Reclamacao:
                 ReclamacaoEntity.endereco,
                 ReclamacaoEntity.numero_endereco,
                 ReclamacaoEntity.categoria,
+                ReclamacaoEntity.qtd_curtidas,
                 UsuarioEntity.nome,
                 UsuarioEntity.foto,
             ).join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
@@ -299,6 +301,7 @@ class Reclamacao:
                     ReclamacaoEntity.endereco,
                     ReclamacaoEntity.numero_endereco,
                     ReclamacaoEntity.categoria,
+                    ReclamacaoEntity.qtd_curtidas,
                     UsuarioEntity.nome,
                     UsuarioEntity.foto,
                 )
@@ -402,4 +405,5 @@ class Reclamacao:
             "nome_usuario": reclamacao.nome,
             "foto_usuario": reclamacao.foto,
             "page": page,
+            "qtd_curtidas": reclamacao.qtd_curtidas,
         }

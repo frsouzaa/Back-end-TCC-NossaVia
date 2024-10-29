@@ -16,6 +16,7 @@ def test_get_minhas_reclamacoes(client, login):
             "nome_usuario",
             "numero_endereco",
             "page",
+            "qtd_curtidas",
             "status",
         ]
 
@@ -37,6 +38,7 @@ def test_get_minhas_reclamacoes_com_categoria(client, login):
             "nome_usuario",
             "numero_endereco",
             "page",
+            "qtd_curtidas",
             "status",
         ]
 
