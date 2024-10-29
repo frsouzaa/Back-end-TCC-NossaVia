@@ -245,3 +245,22 @@ class Curtida(Base):
     def __init__(self, usuario_id: int, reclamacao_id: int) -> None:
         self.usuario_id = usuario_id
         self.reclamacao_id = reclamacao_id
+
+
+@dataclass
+class Comentario(Base):
+    __tablename__: str = "comentario"
+
+    id: int = Column(BigInteger, primary_key=True)
+    criacao: str = Column(DateTime, default=func.now(), nullable=False)
+    modificacao: str = Column(DateTime, default=func.now(), nullable=False)
+    delete: bool = Column(Boolean, default=False, nullable=False)
+
+    texto: str = Column(String(500), nullable=False)
+    reclamacao_id: Mapped[int] = mapped_column(ForeignKey("reclamacao.id"))
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
+
+    def __init__(self, texto: str, reclamacao_id: int, usuario_id: int) -> None:
+        self.texto = texto
+        self.reclamacao_id = reclamacao_id
+        self.usuario_id = usuario_id

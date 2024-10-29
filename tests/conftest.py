@@ -2,7 +2,7 @@ import pytest
 from app import App
 from datetime import datetime
 from src.utils.senha import criptografar
-from src.db.database import db_session, Usuario, Base, engine, Reclamacao
+from src.db.database import db_session, Usuario, Base, engine, Reclamacao, Comentario
 from unittest import mock
 import os
 from src.utils.jwt import gerar as gerar_token
@@ -55,6 +55,14 @@ def pytest_sessionstart(session):
             func.ST_SetSRID(func.ST_MakePoint(longitude, latitude), 4326),
         )
         db_session.add(reclamacao)
+    db_session.flush()
+    for i in range(11):
+        comentario: Comentario = Comentario(
+            f"comentario teste {i}",
+            i + 1,
+            i + 1,
+        )
+        db_session.add(comentario)
     db_session.commit()
 
 
