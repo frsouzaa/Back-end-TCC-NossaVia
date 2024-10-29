@@ -25,7 +25,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12' 
+          python-version: "3.12"
       - name: ler image.json
         id: image_json
         run: |
@@ -56,13 +56,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Verificar se a versão já existe
-        run: | 
+        run: |
           docker pull ${{ vars.CONTAINER_NAME }}:${{ fromJson(needs.infos.outputs.image_json).tag }} > /dev/null && res=1 || res=0
           if [[ $res -eq 1 ]]; then
             echo "::error::A versão ${{ fromJson(needs.infos.outputs.image_json).tag }} já existe! Altere a versão antes de realizar outro build."
             exit 1
           fi
       - name: Build and push
+        env:
+          DOCKER_BUILD_SUMMARY: false
         uses: docker/build-push-action@v6
         with:
           push: true
