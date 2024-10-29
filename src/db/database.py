@@ -8,6 +8,7 @@ from sqlalchemy import (
     BigInteger,
     ForeignKey,
     Enum,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import (
     scoped_session,
@@ -224,3 +225,23 @@ class Reclamacao(Base):
         self.status = status
         self.atualizacao_status = atualizacao_status
         self.geog = geog
+
+
+@dataclass
+class Curtida(Base):
+    __tablename__: str = "curtida"
+    __table_args__ = (
+        UniqueConstraint("usuario_id", "reclamacao_id", name="_usuario_reclamacao_uc"),
+    )
+
+    id: int = Column(BigInteger, primary_key=True)
+    criacao: str = Column(DateTime, default=func.now(), nullable=False)
+    modificacao: str = Column(DateTime, default=func.now(), nullable=False)
+    delete: bool = Column(Boolean, default=False, nullable=False)
+
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuario.id"))
+    reclamacao_id: Mapped[int] = mapped_column(ForeignKey("reclamacao.id"))
+
+    def __init__(self, usuario_id: int, reclamacao_id: int) -> None:
+        self.usuario_id = usuario_id
+        self.reclamacao_id = reclamacao_id

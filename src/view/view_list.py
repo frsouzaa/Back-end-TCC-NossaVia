@@ -7,6 +7,7 @@ from .alterar_senha import AlterarSenha
 from .minhas_reclamacoes import MinhasReclamacaos
 from .recuperar_senha import RecuperarSenha
 from .reclamacoes_proximas import ReclamacoesProximas
+from .curtida import Curtida
 
 
 class View_List:
@@ -22,4 +23,5 @@ class View_List:
             MinhasReclamacaos(),
             RecuperarSenha(),
             ReclamacoesProximas(),
+            Curtida(),
         ]
