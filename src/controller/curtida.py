@@ -5,7 +5,6 @@ from ..db.database import Reclamacao as ReclamacaoModel
 from ..db.database import db_session
 from datetime import datetime
 import traceback
-from time import sleep
 
 
 class Curtida:
@@ -29,7 +28,6 @@ class Curtida:
                 existente[1].modificacao = datetime.now()
                 existente[0].qtd_curtidas += 1
                 existente[0].modificacao = datetime.now()
-                sleep(10)
                 db_session.add(existente[0])
                 db_session.add(existente[1])
                 db_session.commit()
@@ -46,7 +44,6 @@ class Curtida:
             curtida = CurtidaModel(request.token_id, request_json["reclamacao"])
             reclamacao.qtd_curtidas += 1
             reclamacao.modificacao = datetime.now()
-            sleep(10)
             db_session.add(reclamacao)
             db_session.add(curtida)
             db_session.commit()
