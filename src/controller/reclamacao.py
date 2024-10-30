@@ -3,6 +3,7 @@ from flask import request
 from ..db.database import db_session
 from ..db.database import Reclamacao as ReclamacaoEntity
 from ..db.database import Usuario as UsuarioEntity
+from ..db.database import Curtida as CurtidaEntity
 from psycopg2.errors import (
     InvalidTextRepresentation,
     ForeignKeyViolation,
@@ -101,18 +102,29 @@ class Reclamacao:
             ):
                 LIMIT: int = 10
                 page: int = int(request.args.get("page"))
-                query = db_session.query(
-                    ReclamacaoEntity.status,
-                    ReclamacaoEntity.id,
-                    ReclamacaoEntity.descricao,
-                    ReclamacaoEntity.fotos,
-                    ReclamacaoEntity.endereco,
-                    ReclamacaoEntity.numero_endereco,
-                    ReclamacaoEntity.categoria,
-                    ReclamacaoEntity.qtd_curtidas,
-                    UsuarioEntity.nome,
-                    UsuarioEntity.foto,
-                ).join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
+                query = (
+                    db_session.query(
+                        ReclamacaoEntity.status,
+                        ReclamacaoEntity.id,
+                        ReclamacaoEntity.descricao,
+                        ReclamacaoEntity.fotos,
+                        ReclamacaoEntity.endereco,
+                        ReclamacaoEntity.numero_endereco,
+                        ReclamacaoEntity.categoria,
+                        ReclamacaoEntity.qtd_curtidas,
+                        UsuarioEntity.nome,
+                        UsuarioEntity.foto,
+                        CurtidaEntity.id.label("id_curtida"),
+                    )
+                    .join(
+                        UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id
+                    )
+                    .join(
+                        CurtidaEntity,
+                        CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                        isouter=True,
+                    )
+                )
                 if v := request.args.get("categoria"):
                     if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
                         return {"msg": "categoria invalida"}, 409
@@ -279,7 +291,7 @@ class Reclamacao:
                 .all()
             )
             return [
-                self.reclamacao_json_feed(reclamacao, page)
+                self.reclamacao_json_feed_pessoal(reclamacao, page)
                 for reclamacao in reclamacoes
             ], 200
         except:
@@ -304,8 +316,14 @@ class Reclamacao:
                     ReclamacaoEntity.qtd_curtidas,
                     UsuarioEntity.nome,
                     UsuarioEntity.foto,
+                    CurtidaEntity.id.label("id_curtida"),
                 )
                 .join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
+                .join(
+                    CurtidaEntity,
+                    CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                    isouter=True,
+                )
                 .filter(
                     ReclamacaoEntity.delete == False,
                     ReclamacaoEntity.status == "nao_resolvido",
@@ -392,6 +410,21 @@ class Reclamacao:
             "qtd_curtidas": reclamacao.qtd_curtidas,
             "status": reclamacao.status.value,
         }
+        
+    def reclamacao_json_feed_pessoal(self, reclamacao, page: int) -> Dict[str, str]:
+        return {
+            "status": reclamacao.status.value,
+            "id": reclamacao.id,
+            "descricao": reclamacao.descricao,
+            "fotos": reclamacao.fotos.split("|"),
+            "endereco": reclamacao.endereco,
+            "numero_endereco": reclamacao.numero_endereco,
+            "categoria": reclamacao.categoria.value,
+            "nome_usuario": reclamacao.nome,
+            "foto_usuario": reclamacao.foto,
+            "page": page,
+            "qtd_curtidas": reclamacao.qtd_curtidas,
+        }
 
     def reclamacao_json_feed(self, reclamacao, page: int) -> Dict[str, str]:
         return {
@@ -406,4 +439,5 @@ class Reclamacao:
             "foto_usuario": reclamacao.foto,
             "page": page,
             "qtd_curtidas": reclamacao.qtd_curtidas,
+            "curtido": reclamacao.id_curtida != None,
         }

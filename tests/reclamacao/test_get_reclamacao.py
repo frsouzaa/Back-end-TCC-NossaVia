@@ -30,6 +30,7 @@ def test_get_reclamacao(client):
     for json in response.json:
         assert sorted(json.keys()) == [
             "categoria",
+            "curtido",
             "descricao",
             "endereco",
             "foto_usuario",
@@ -49,6 +50,7 @@ def test_get_reclamacao_sem_categoria(client):
     for json in response.json:
         assert sorted(json.keys()) == [
             "categoria",
+            "curtido",
             "descricao",
             "endereco",
             "foto_usuario",
