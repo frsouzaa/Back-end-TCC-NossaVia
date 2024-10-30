@@ -83,18 +83,34 @@ class Reclamacao:
     def get(self) -> Tuple[List[Dict[str, str]], int]:
         try:
             if request.args.get("id"):
-                reclamacao = (
-                    db_session.query(ReclamacaoEntity, UsuarioEntity)
-                    .join(
-                        UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id
+                if hasattr(request, "token_id"):
+                    reclamacao = (
+                        db_session.query(ReclamacaoEntity, UsuarioEntity, CurtidaEntity.delete)
+                        .join(
+                            UsuarioEntity,
+                            ReclamacaoEntity.usuario_id == UsuarioEntity.id,
+                        )
+                        .join(
+                            CurtidaEntity,
+                            and_(
+                                CurtidaEntity.usuario_id == request.token_id,
+                                CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                            ),
+                            isouter=True,
+                        )
                     )
-                    .filter(
-                        ReclamacaoEntity.id == request.args.get("id"),
-                        ReclamacaoEntity.delete == False,
+                else:
+                    reclamacao = db_session.query(ReclamacaoEntity, UsuarioEntity).join(
+                        UsuarioEntity,
+                        ReclamacaoEntity.usuario_id == UsuarioEntity.id,
                     )
-                    .one()
-                )
-                return self.reclamacao_json(reclamacao[0], reclamacao[1]), 200
+                reclamacao = reclamacao.filter(
+                    ReclamacaoEntity.id == request.args.get("id"),
+                    ReclamacaoEntity.delete == False,
+                ).one()
+                if hasattr(request, "token_id"):
+                    return self.reclamacao_json(reclamacao[0], reclamacao[1], reclamacao[2]), 200
+                return self.reclamacao_json(reclamacao[0], reclamacao[1], None), 200
             if (
                 request.args.get("latitude")
                 and request.args.get("longitude")
@@ -395,7 +411,7 @@ class Reclamacao:
             db_session.remove()
 
     def reclamacao_json(
-        self, reclamacao: ReclamacaoEntity, usuario: UsuarioEntity
+        self, reclamacao: ReclamacaoEntity, usuario: UsuarioEntity, curtida: CurtidaEntity
     ) -> Dict[str, str]:
         return {
             "id": reclamacao.id,
@@ -417,6 +433,7 @@ class Reclamacao:
             "status": reclamacao.status.value,
             "nome_usuario": usuario.nome,
             "foto_usuario": usuario.foto,
+            "curtido": curtida == False,
         }
 
     def reclamacao_json_editar(self, reclamacao: ReclamacaoEntity) -> Dict[str, str]:
@@ -468,5 +485,5 @@ class Reclamacao:
             "foto_usuario": reclamacao.foto,
             "page": page,
             "qtd_curtidas": reclamacao.qtd_curtidas,
-            "curtido": reclamacao.curtida == True,
+            "curtido": reclamacao.curtida == False,
         }

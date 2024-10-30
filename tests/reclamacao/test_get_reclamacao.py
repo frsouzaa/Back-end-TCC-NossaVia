@@ -7,6 +7,38 @@ def test_get_reclamacao_id(client):
         "cep",
         "cidade",
         "criacao",
+        "curtido",
+        "data",
+        "descricao",
+        "endereco",
+        "estado",
+        "foto_usuario",
+        "fotos",
+        "id",
+        "latitude",
+        "longitude",
+        "nome_usuario",
+        "numero_endereco",
+        "ponto_referencia",
+        "qtd_curtidas",
+        "status",
+    ]
+
+
+def test_get_reclamacao_id_usuario_logado(client, login):
+    token = login("email_10@teste.com", "senha_10")
+    response = client.get(
+        "/reclamacao?id=2",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    assert sorted(response.json.keys()) == [
+        "bairro",
+        "categoria",
+        "cep",
+        "cidade",
+        "criacao",
+        "curtido",
         "data",
         "descricao",
         "endereco",
