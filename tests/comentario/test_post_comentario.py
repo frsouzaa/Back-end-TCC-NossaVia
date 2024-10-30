@@ -12,7 +12,14 @@ def test_post_comentario(client, login):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 201
-    assert response.json == {"msg": "comentario criado com sucesso"}
+    assert sorted(response.json.keys()) == [
+        "criacao",
+        "foto",
+        "id_comenatario",
+        "id_usuario",
+        "nome",
+        "texto",
+    ]
 
 
 def test_post_comentario_reclamacao_nao_encontrada(client, login):

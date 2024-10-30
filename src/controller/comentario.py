@@ -16,8 +16,25 @@ class Comentario:
                 request_json["texto"], request_json["reclamacao"], request.token_id
             )
             db_session.add(comentario)
+            db_session.flush()
+            db_session.refresh(comentario)
             db_session.commit()
-            return {"msg": "comentario criado com sucesso"}, 201
+            comentario = (
+                db_session.query(
+                    ComentarioModel.texto,
+                    ComentarioModel.criacao,
+                    ComentarioModel.id.label("id_comentario"),
+                    UsuarioModel.nome,
+                    UsuarioModel.foto,
+                    UsuarioModel.id.label("id_usuario"),
+                )
+                .join(UsuarioModel, UsuarioModel.id == ComentarioModel.usuario_id)
+                .filter(
+                    ComentarioModel.id == comentario.id,
+                )
+                .one()
+            )
+            return self.comentario_json(comentario), 201
         except Exception as e:
             if "comentario_reclamacao_id_fkey" in e.orig.pgerror:
                 return {"msg": "reclamacao nao encontrada"}, 404
