@@ -86,6 +86,7 @@ class Reclamacao(FlaskView):
             "categoria": {"type": "string", "empty": False, "required": False},
         }
     )
+    @ValidarToken(True)
     def get(self) -> Tuple[Dict[str, str], int]:
         return ReclamacaoController().get()
 

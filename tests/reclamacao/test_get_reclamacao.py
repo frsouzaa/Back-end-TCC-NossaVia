@@ -30,7 +30,6 @@ def test_get_reclamacao(client):
     for json in response.json:
         assert sorted(json.keys()) == [
             "categoria",
-            "curtido",
             "descricao",
             "endereco",
             "foto_usuario",
@@ -46,6 +45,29 @@ def test_get_reclamacao(client):
 
 def test_get_reclamacao_sem_categoria(client):
     response = client.get("/reclamacao?latitude=0&longitude=0&page=0")
+    assert response.status_code == 200
+    for json in response.json:
+        assert sorted(json.keys()) == [
+            "categoria",
+            "descricao",
+            "endereco",
+            "foto_usuario",
+            "fotos",
+            "id",
+            "nome_usuario",
+            "numero_endereco",
+            "page",
+            "qtd_curtidas",
+            "status",
+        ]
+
+
+def test_get_reclamacao_usuario_logado(client, login):
+    token = login("email_10@teste.com", "senha_10")
+    response = client.get(
+        "/reclamacao?latitude=0&longitude=0&page=0",
+        headers={"Authorization": f"Bearer {token}"},
+    )
     assert response.status_code == 200
     for json in response.json:
         assert sorted(json.keys()) == [

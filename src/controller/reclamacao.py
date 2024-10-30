@@ -13,7 +13,7 @@ from uuid import uuid4
 from datetime import datetime, timedelta
 from os import getenv
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import func, or_
+from sqlalchemy import func, or_, and_
 from ..db.database import Categoria
 import traceback
 
@@ -102,8 +102,36 @@ class Reclamacao:
             ):
                 LIMIT: int = 10
                 page: int = int(request.args.get("page"))
-                query = (
-                    db_session.query(
+                if hasattr(request, "token_id"):
+                    query = (
+                        db_session.query(
+                            ReclamacaoEntity.status,
+                            ReclamacaoEntity.id,
+                            ReclamacaoEntity.descricao,
+                            ReclamacaoEntity.fotos,
+                            ReclamacaoEntity.endereco,
+                            ReclamacaoEntity.numero_endereco,
+                            ReclamacaoEntity.categoria,
+                            ReclamacaoEntity.qtd_curtidas,
+                            UsuarioEntity.nome,
+                            UsuarioEntity.foto,
+                            CurtidaEntity.id.label("id_curtida"),
+                        )
+                        .join(
+                            UsuarioEntity,
+                            ReclamacaoEntity.usuario_id == UsuarioEntity.id,
+                        )
+                        .join(
+                            CurtidaEntity,
+                            and_(
+                                CurtidaEntity.usuario_id == request.token_id,
+                                CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                            ),
+                            isouter=True,
+                        )
+                    )
+                else:
+                    query = db_session.query(
                         ReclamacaoEntity.status,
                         ReclamacaoEntity.id,
                         ReclamacaoEntity.descricao,
@@ -114,17 +142,10 @@ class Reclamacao:
                         ReclamacaoEntity.qtd_curtidas,
                         UsuarioEntity.nome,
                         UsuarioEntity.foto,
-                        CurtidaEntity.id.label("id_curtida"),
+                    ).join(
+                        UsuarioEntity,
+                        ReclamacaoEntity.usuario_id == UsuarioEntity.id,
                     )
-                    .join(
-                        UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id
-                    )
-                    .join(
-                        CurtidaEntity,
-                        CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
-                        isouter=True,
-                    )
-                )
                 if v := request.args.get("categoria"):
                     if v not in [i for i in Categoria.__dict__.keys() if i[:1] != "_"]:
                         return {"msg": "categoria invalida"}, 409
@@ -157,8 +178,13 @@ class Reclamacao:
                     .limit(LIMIT)
                     .all()
                 )
+                if hasattr(request, "token_id"):
+                    return [
+                        self.reclamacao_json_feed(reclamacao, page)
+                        for reclamacao in reclamacoes
+                    ], 200
                 return [
-                    self.reclamacao_json_feed(reclamacao, page)
+                    self.reclamacao_json_feed_pessoal(reclamacao, page)
                     for reclamacao in reclamacoes
                 ], 200
             return {"msg": "parametros invalidos"}, 409
@@ -321,7 +347,10 @@ class Reclamacao:
                 .join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
                 .join(
                     CurtidaEntity,
-                    CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                    and_(
+                        CurtidaEntity.usuario_id == request.token_id,
+                        CurtidaEntity.reclamacao_id == ReclamacaoEntity.id,
+                    ),
                     isouter=True,
                 )
                 .filter(
@@ -410,7 +439,7 @@ class Reclamacao:
             "qtd_curtidas": reclamacao.qtd_curtidas,
             "status": reclamacao.status.value,
         }
-        
+
     def reclamacao_json_feed_pessoal(self, reclamacao, page: int) -> Dict[str, str]:
         return {
             "status": reclamacao.status.value,
