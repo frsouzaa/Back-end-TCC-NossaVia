@@ -115,7 +115,7 @@ class Reclamacao:
                             ReclamacaoEntity.qtd_curtidas,
                             UsuarioEntity.nome,
                             UsuarioEntity.foto,
-                            CurtidaEntity.id.label("id_curtida"),
+                            CurtidaEntity.delete.label("curtida"),
                         )
                         .join(
                             UsuarioEntity,
@@ -342,7 +342,7 @@ class Reclamacao:
                     ReclamacaoEntity.qtd_curtidas,
                     UsuarioEntity.nome,
                     UsuarioEntity.foto,
-                    CurtidaEntity.id.label("id_curtida"),
+                    CurtidaEntity.delete.label("curtida"),
                 )
                 .join(UsuarioEntity, ReclamacaoEntity.usuario_id == UsuarioEntity.id)
                 .join(
@@ -468,5 +468,5 @@ class Reclamacao:
             "foto_usuario": reclamacao.foto,
             "page": page,
             "qtd_curtidas": reclamacao.qtd_curtidas,
-            "curtido": reclamacao.id_curtida != None,
+            "curtido": reclamacao.curtida == True,
         }
