@@ -4,11 +4,14 @@ def test_login_autorizado(client):
     )
     assert response.status_code == 200
     assert sorted(response.json.keys()) == [
+        "bairro",
         "cep",
+        "cidade",
         "complemento_endereco",
         "data_nascimento",
         "email",
         "endereco",
+        "estado",
         "foto",
         "nome",
         "numero_endereco",

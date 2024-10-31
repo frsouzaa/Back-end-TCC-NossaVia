@@ -43,4 +43,7 @@ class Login:
             "pontucao": usuario.pontucao,
             "foto": usuario.foto,
             "token": gerar_jwt({"id": str(usuario.id)}),
+            "bairro": usuario.bairro,
+            "cidade": usuario.cidade,
+            "estado": usuario.estado.value,
         }
