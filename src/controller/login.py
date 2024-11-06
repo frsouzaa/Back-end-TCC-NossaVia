@@ -46,4 +46,5 @@ class Login:
             "bairro": usuario.bairro,
             "cidade": usuario.cidade,
             "estado": usuario.estado.value,
+            "id": usuario.id,
         }

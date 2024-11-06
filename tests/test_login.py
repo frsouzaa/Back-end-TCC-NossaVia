@@ -13,6 +13,7 @@ def test_login_autorizado(client):
         "endereco",
         "estado",
         "foto",
+        "id",
         "nome",
         "numero_endereco",
         "pontucao",
