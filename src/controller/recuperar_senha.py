@@ -11,7 +11,7 @@ from ..utils.senha import criptografar, descriptografar
 
 class RecuperarSenha:
     
-    TEMPO_TOKEN = 150
+    TEMPO_TOKEN = 15
 
     def post(self) -> Tuple[Dict[str, str] | str, int]:
         try:
