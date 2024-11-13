@@ -88,7 +88,7 @@ class Usuario(Base):
     data_nascimento: str = Column(DateTime, nullable=False)
     sexo: str = Column(Enum(Sexo), nullable=False)
     telefone: str = Column(String(20), nullable=False)
-    pontucao: int = Column(BigInteger, default=0, nullable=False)
+    pontuacao: int = Column(BigInteger, default=0, nullable=False)
     foto: str = Column(String(2000), nullable=True)
 
     def __init__(
@@ -107,7 +107,7 @@ class Usuario(Base):
         data_nascimento: str,
         sexo: str,
         telefone: str,
-        pontucao: int,
+        pontuacao: int,
     ) -> None:
         self.nome = nome
         self.cpf = cpf
@@ -123,7 +123,7 @@ class Usuario(Base):
         self.data_nascimento = data_nascimento
         self.sexo = sexo
         self.telefone = telefone
-        self.pontucao = pontucao
+        self.pontuacao = pontuacao
 
 
 class RecuperarSenha(Base):

@@ -16,7 +16,7 @@ def test_login_autorizado(client):
         "id",
         "nome",
         "numero_endereco",
-        "pontucao",
+        "pontuacao",
         "sexo",
         "telefone",
         "token",

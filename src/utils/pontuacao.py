@@ -7,6 +7,6 @@ def atualizar(id_usuario: int, soma: int, db_session):
         .filter(UsuarioModel.id == id_usuario, UsuarioModel.delete == False)
         .one()
     )
-    usuario.pontucao += soma
+    usuario.pontuacao += soma
     db_session.add(usuario)
     db_session.flush()

@@ -49,7 +49,7 @@ def test_put_usuario(monkeypatch, client, login):
         "foto",
         "nome",
         "numero_endereco",
-        "pontucao",
+        "pontuacao",
         "sexo",
         "telefone",
     ]
@@ -86,7 +86,7 @@ def test_put_usuario_sem_foto(client, login):
         "foto",
         "nome",
         "numero_endereco",
-        "pontucao",
+        "pontuacao",
         "sexo",
         "telefone",
     ]

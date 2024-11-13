@@ -162,6 +162,6 @@ class Usuario:
             "data_nascimento": usuario.data_nascimento.strftime("%Y-%m-%d %H:%M:%S:%f"),
             "sexo": usuario.sexo.value,
             "telefone": usuario.telefone,
-            "pontucao": usuario.pontucao,
+            "pontuacao": usuario.pontuacao,
             "foto": usuario.foto,
         }
