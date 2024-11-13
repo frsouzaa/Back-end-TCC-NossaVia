@@ -16,6 +16,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import func, or_, and_
 from ..db.database import Categoria
 import traceback
+from ..utils.pontuacao import atualizar as atualizar_pontuacao
 
 
 class Reclamacao:
@@ -57,8 +58,12 @@ class Reclamacao:
                     4326,
                 ),
             )
+            
             db_session.add(reclamacao)
             db_session.flush()
+            
+            atualizar_pontuacao(request.token_id, 10, db_session)
+            
             for foto in fotos:
                 upload_blob(
                     foto["base64"],

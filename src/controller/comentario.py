@@ -2,12 +2,15 @@ from typing import Dict, Tuple
 from ..db.database import db_session
 from ..db.database import Comentario as ComentarioModel
 from ..db.database import Usuario as UsuarioModel
+from ..db.database import Reclamacao as ReclamacaoModel
 import traceback
 from flask import request
 from datetime import datetime
+from ..utils.pontuacao import atualizar as atualizar_pontuacao
 
 
 class Comentario:
+    QTD_PONTOS: int = 2
 
     def post(self) -> Tuple[Dict[str, str], int]:
         try:
@@ -34,6 +37,14 @@ class Comentario:
                 )
                 .one()
             )
+            reclamacao = (
+                db_session.query(ReclamacaoModel.usuario_id)
+                .filter(ReclamacaoModel.id == request_json["reclamacao"])
+                .one()
+            )
+            if reclamacao.usuario_id != request.token_id:
+                atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
+                atualizar_pontuacao(reclamacao.usuario_id, self.QTD_PONTOS, db_session)
             return self.comentario_json(comentario), 201
         except Exception as e:
             if "comentario_reclamacao_id_fkey" in e.orig.pgerror:
@@ -90,6 +101,15 @@ class Comentario:
             comentario.delete = True
             comentario.modificacao = datetime.now()
             db_session.add(comentario)
+            db_session.flush()
+            reclamacao = (
+                db_session.query(ReclamacaoModel.usuario_id)
+                .filter(ReclamacaoModel.id == comentario.reclamacao_id)
+                .one()
+            )
+            if reclamacao.usuario_id != request.token_id:
+                atualizar_pontuacao(request.token_id, -self.QTD_PONTOS, db_session)
+                atualizar_pontuacao(reclamacao.usuario_id, -self.QTD_PONTOS, db_session)
             db_session.commit()
             return {"msg": "comentario deletado com sucesso"}, 200
         except Exception as e:

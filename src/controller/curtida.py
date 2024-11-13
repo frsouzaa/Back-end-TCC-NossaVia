@@ -5,9 +5,11 @@ from ..db.database import Reclamacao as ReclamacaoModel
 from ..db.database import db_session
 from datetime import datetime
 import traceback
+from ..utils.pontuacao import atualizar as atualizar_pontuacao
 
 
 class Curtida:
+    QTD_PONTOS: int = 1
 
     def post(self) -> Tuple[Dict[str, str], int]:
         try:
@@ -30,6 +32,10 @@ class Curtida:
                 existente[0].modificacao = datetime.now()
                 db_session.add(existente[0])
                 db_session.add(existente[1])
+                db_session.flush()
+                if existente[0].usuario_id != request.token_id:
+                    atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
+                    atualizar_pontuacao(existente[0].usuario_id, self.QTD_PONTOS, db_session)
                 db_session.commit()
                 return {"mensagem": "curtida realizada com sucesso"}, 200
             reclamacao = (
@@ -46,6 +52,10 @@ class Curtida:
             reclamacao.modificacao = datetime.now()
             db_session.add(reclamacao)
             db_session.add(curtida)
+            db_session.flush()
+            if reclamacao.usuario_id != request.token_id:
+                atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
+                atualizar_pontuacao(reclamacao.usuario_id, self.QTD_PONTOS, db_session)
             db_session.commit()
             return {"mensagem": "curtida realizada com sucesso"}, 201
         except Exception as e:
@@ -73,6 +83,10 @@ class Curtida:
             existente[0].modificacao = datetime.now()
             db_session.add(existente[0])
             db_session.add(existente[1])
+            db_session.flush()
+            if existente[0].usuario_id != request.token_id:
+                atualizar_pontuacao(request.token_id, -self.QTD_PONTOS, db_session)
+                atualizar_pontuacao(existente[0].usuario_id, -self.QTD_PONTOS, db_session)
             db_session.commit()
             return {"mensagem": "curtida removida com sucesso"}, 200
         except Exception as e:

@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 from ..db.database import Usuario as UsuarioModel
 from flask import request
-from psycopg2.errorcodes import UNIQUE_VIOLATION, INVALID_TEXT_REPRESENTATION
+from psycopg2.errorcodes import INVALID_TEXT_REPRESENTATION
 from ..utils.senha import criptografar
 from ..db.database import db_session
 from sqlalchemy.orm.exc import NoResultFound
