@@ -42,7 +42,7 @@ class Login:
             "telefone": usuario.telefone,
             "pontuacao": usuario.pontuacao,
             "foto": usuario.foto,
-            "token": gerar_jwt({"id": str(usuario.id)}),
+            "token": gerar_jwt({"id": usuario.id}),
             "bairro": usuario.bairro,
             "cidade": usuario.cidade,
             "estado": usuario.estado.value,
