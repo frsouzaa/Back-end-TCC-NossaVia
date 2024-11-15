@@ -79,6 +79,7 @@ jobs:
             PORT=${{ vars.PORT }}
             EMAIL=${{ vars.EMAIL }}
             SENHA=${{ secrets.SENHA }}
+            GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
   azure:
     runs-on: ubuntu-latest
     needs: ["docker", "infos"]

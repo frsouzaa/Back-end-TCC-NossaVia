@@ -9,6 +9,7 @@ from .recuperar_senha import RecuperarSenha
 from .reclamacoes_proximas import ReclamacoesProximas
 from .curtida import Curtida
 from .comentario import Comentario
+from .localizacao import Localizacao
 
 
 class View_List:
@@ -26,4 +27,5 @@ class View_List:
             ReclamacoesProximas(),
             Curtida(),
             Comentario(),
+            Localizacao()
         ]
