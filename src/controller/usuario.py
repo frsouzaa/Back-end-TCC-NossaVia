@@ -164,4 +164,5 @@ class Usuario:
             "telefone": usuario.telefone,
             "pontuacao": usuario.pontuacao,
             "foto": usuario.foto,
+            "id": usuario.id,
         }
