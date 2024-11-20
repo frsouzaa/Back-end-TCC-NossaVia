@@ -25,6 +25,9 @@ pip install -r requirements.txt
 | `AZURE_BLOB_CONTAINER_RECLAMACOES`    | Nome do blob container para armazenar as imagens das denúncias |
 | `AZURE_BLOB_URL`          | Link do storage account |
 | `PORT`                    | Porta em que a aplicaçã vai rodar |
+| `EMAIL`                   | E-mail utilizado na função de recuperar senha |
+| `SENHA`                   | Senha do e-mail utilizado na função de recuperar senha |
+| `GOOGLE_API_KEY`          | Chave da API do google |
 
 ## Rodar o projeto
 
