@@ -16,6 +16,7 @@ def test_get_usuario(client, login):
         "endereco",
         "estado",
         "foto",
+        "id",
         "nome",
         "numero_endereco",
         "pontuacao",
