@@ -16,18 +16,22 @@ pip install -r requirements.txt
 
 ### Adicionar no arquivo `.env`
 
-| Nome da variável        | Função  |
-|-------------------------|---------|
-| `DB_URI`                  | URI de conexão com o banco de dados |
-| `JWT_KEY`                 | Chave para geração e validação de JWT |
-| `AZURE_CONNECTION_STRING` | String de conexão da Azure |
-| `AZURE_BLOB_CONTAINER_USUARIOS`     | Nome do blob container para armazenar as fotos dos usuários |
-| `AZURE_BLOB_CONTAINER_RECLAMACOES`    | Nome do blob container para armazenar as imagens das denúncias |
-| `AZURE_BLOB_URL`          | Link do storage account |
-| `PORT`                    | Porta em que a aplicaçã vai rodar |
-| `EMAIL`                   | E-mail utilizado na função de recuperar senha |
-| `SENHA`                   | Senha do e-mail utilizado na função de recuperar senha |
-| `GOOGLE_API_KEY`          | Chave da API do google |
+| Nome da variável          |                                  Função                                    | Tipo de Dado |
+|---------------------------|----------------------------------------------------------------------------|------------- |
+| `DB_URI`                  | URI de conexão com o banco de dados                                        | Texto        |
+| `JWT_KEY`                 | Chave para geração e validação de JWT                                      | Texto        |
+| `AZURE_CONNECTION_STRING` | String de conexão da Azure                                                 | Texto        |
+| `AZURE_BLOB_CONTAINER_USUARIOS`     | Nome do blob container para armazenar as fotos dos usuários      | Texto        |
+| `AZURE_BLOB_CONTAINER_RECLAMACOES`    | Nome do blob container para armazenar as imagens das denúncias | Texto        |
+| `AZURE_BLOB_URL`          | Link do storage account                                                    | Texto        |
+| `PORT`                    | Porta em que a aplicação vai rodar                                         | Número       |
+| `EMAIL`                   | E-mail utilizado na função de recuperar senha                              | Texto        |
+| `SENHA`                   | Senha do e-mail utilizado na função de recuperar senha                     | Texto        |
+| `GOOGLE_API_KEY`          | Chave da API do google                                                     | Texto        |
+| `PONTOS_RECLAMACAO`       | Quantidade de pontos somados por reclamção feita                           | Número       |
+| `PONTOS_COMENTARIO`       | Quantidade de pontos somados por comentário feito ou recebido              | Número       |
+| `PONTOS_CURTIDA`          | Quantidade de pontos somados por curtida feita ou recebida                 | Número       |
+| `DIAS_JOB`                | Quantidade de dias retroativos que os jobs irão buscar                     | Número       |
 
 ## Rodar o projeto
 

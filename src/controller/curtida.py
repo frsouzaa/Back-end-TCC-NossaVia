@@ -6,10 +6,11 @@ from ..db.database import db_session
 from datetime import datetime
 import traceback
 from ..utils.pontuacao import atualizar as atualizar_pontuacao
+from os import getenv
 
 
 class Curtida:
-    QTD_PONTOS: int = 1
+    QTD_PONTOS: int = int(getenv("PONTOS_CURTIDA"))
 
     def post(self) -> Tuple[Dict[str, str], int]:
         try:

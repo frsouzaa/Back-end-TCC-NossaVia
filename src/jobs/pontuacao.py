@@ -1,11 +1,15 @@
 from src.db.database import db_session, Curtida, Reclamacao, Comentario, Usuario
 from datetime import datetime, date, timedelta
 from sqlalchemy import func, or_
+from os import getenv
 
 
 def run():
+    print(f"{"Job Pontuação":-^47}")
+    print(f"Iniciando execução - {datetime.now()}")
+    
     now = datetime.now()
-    day_minus_one = date(now.year, now.month, now.day) - timedelta(days=1)
+    day_minus_one = date(now.year, now.month, now.day) - timedelta(days=int(getenv("DIAS_JOB")))
     
     print(f"Buscando desde {day_minus_one}")
 
@@ -125,32 +129,36 @@ def run():
         db_session.query(Usuario).where(Usuario.id.in_(set_usuario)).all()
     )
 
-    curtidas_por_usuario_2 = {i: 0 for i in set_usuario}
+    pontos_por_usuario = {i: 0 for i in set_usuario}
+    
+    PONTOS_RECLAMACAO = int(getenv("PONTOS_RECLAMACAO"))
+    PONTOS_COMENTARIO = int(getenv("PONTOS_COMENTARIO"))
+    PONTOS_CURTIDA = int(getenv("PONTOS_CURTIDA"))
 
     for reclamacao in reclamacoes_por_usuario:
         if reclamacao[0] in set_usuario:
-            curtidas_por_usuario_2[reclamacao[0]] += reclamacao[1] * 10
+            pontos_por_usuario[reclamacao[0]] += reclamacao[1] * PONTOS_RECLAMACAO
 
     for curtida in curtidas_por_usuario:
         if curtida[0] in set_usuario:
-            curtidas_por_usuario_2[curtida[0]] += curtida[1]
+            pontos_por_usuario[curtida[0]] += curtida[1] * PONTOS_CURTIDA
         if curtida[2] in set_usuario:
-            curtidas_por_usuario_2[curtida[2]] += curtida[1]
+            pontos_por_usuario[curtida[2]] += curtida[1] * PONTOS_CURTIDA
         
     for comentario in comentarios_por_usuario:
         if comentario[0] in set_usuario:
-            curtidas_por_usuario_2[comentario[0]] += comentario[1] * 2
+            pontos_por_usuario[comentario[0]] += comentario[1] * PONTOS_COMENTARIO
         if comentario[2] in set_usuario:
-            curtidas_por_usuario_2[comentario[2]] += comentario[1] * 2
+            pontos_por_usuario[comentario[2]] += comentario[1] * PONTOS_COMENTARIO
 
     for usuario in usuarios_com_curtidas:
-        if usuario.pontuacao != curtidas_por_usuario_2[usuario.id]:
+        if usuario.pontuacao != pontos_por_usuario[usuario.id]:
             print(
-                f"Identificada diferença na pontuação do usuario {usuario.id}, mundando de {usuario.pontuacao} para {curtidas_por_usuario_2[usuario.id]}"
+                f"Identificada diferença na pontuação do usuario {usuario.id}, mundando de {usuario.pontuacao} para {pontos_por_usuario[usuario.id]}"
             )
-            usuario.pontuacao = curtidas_por_usuario_2[usuario.id]
+            usuario.pontuacao = pontos_por_usuario[usuario.id]
             db_session.add(usuario)
 
     db_session.commit()
     
-    print("Fim da execução")
+    print(f"Fim da execução - {datetime.now()}")

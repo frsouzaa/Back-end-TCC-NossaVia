@@ -80,6 +80,10 @@ jobs:
             EMAIL=${{ vars.EMAIL }}
             SENHA=${{ secrets.SENHA }}
             GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+            PONTOS_RECLAMACAO=${{ vars.PONTOS_RECLAMACAO }}
+            PONTOS_COMENTARIO=${{ vars.PONTOS_COMENTARIO }}
+            PONTOS_CURTIDA=${{ vars.PONTOS_CURTIDA }}
+            DIAS_JOB=${{ vars.DIAS_JOB }}
   azure:
     runs-on: ubuntu-latest
     needs: ["docker", "infos"]

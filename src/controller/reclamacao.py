@@ -20,6 +20,7 @@ from ..utils.pontuacao import atualizar as atualizar_pontuacao
 
 
 class Reclamacao:
+    QTD_PONTOS: int = int(getenv("PONTOS_RECLAMACAO"))
 
     def post(self) -> Tuple[Dict[str, str], int]:
         try:
@@ -62,7 +63,7 @@ class Reclamacao:
             db_session.add(reclamacao)
             db_session.flush()
             
-            atualizar_pontuacao(request.token_id, 10, db_session)
+            atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
             
             for foto in fotos:
                 upload_blob(
@@ -290,6 +291,7 @@ class Reclamacao:
             reclamacao.delete = True
             reclamacao.modificacao = datetime.now()
             db_session.add(reclamacao)
+            atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
             db_session.commit()
             return {"msg": "deletado"}, 200
         except NoResultFound:

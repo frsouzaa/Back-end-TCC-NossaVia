@@ -7,10 +7,11 @@ import traceback
 from flask import request
 from datetime import datetime
 from ..utils.pontuacao import atualizar as atualizar_pontuacao
+from os import getenv
 
 
 class Comentario:
-    QTD_PONTOS: int = 2
+    QTD_PONTOS: int = int(getenv("PONTOS_COMENTARIO"))
 
     def post(self) -> Tuple[Dict[str, str], int]:
         try:

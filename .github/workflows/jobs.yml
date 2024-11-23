@@ -18,5 +18,9 @@ jobs:
       - name: Run jobs
         env:
           DB_URI: ${{ secrets.DB_URI }}
+          PONTOS_RECLAMACAO: ${{ vars.PONTOS_RECLAMACAO }}
+          PONTOS_COMENTARIO: ${{ vars.PONTOS_COMENTARIO }}
+          PONTOS_CURTIDA: ${{ vars.PONTOS_CURTIDA }}
+          DIAS_JOB: ${{ vars.DIAS_JOB }}
         run: |
           python jobs.py
