@@ -291,7 +291,7 @@ class Reclamacao:
             reclamacao.delete = True
             reclamacao.modificacao = datetime.now()
             db_session.add(reclamacao)
-            atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
+            atualizar_pontuacao(request.token_id, -self.QTD_PONTOS, db_session)
             db_session.commit()
             return {"msg": "deletado"}, 200
         except NoResultFound:
