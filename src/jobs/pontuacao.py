@@ -27,10 +27,10 @@ def run():
         )
     }
 
-    usuarios_curtidas = {
-        i[0]
+    res = {
+        i
         for i in (
-            db_session.query(Reclamacao.usuario_id)
+            db_session.query(Reclamacao.usuario_id, Curtida.usuario_id)
             .join(Curtida, Curtida.reclamacao_id == Reclamacao.id)
             .where(
                 or_(
@@ -42,11 +42,16 @@ def run():
             .all()
         )
     }
+    
+    usuarios_curtidas = set()
+    for i in res:
+        usuarios_curtidas.add(i[0])
+        usuarios_curtidas.add(i[1])
 
-    usuarios_comentarios = {
-        i[0]
+    res = {
+        i
         for i in (
-            db_session.query(Reclamacao.usuario_id)
+            db_session.query(Reclamacao.usuario_id, Comentario.usuario_id)
             .join(Comentario, Comentario.reclamacao_id == Reclamacao.id)
             .where(
                 or_(
@@ -58,6 +63,11 @@ def run():
             .all()
         )
     }
+    
+    usuarios_comentarios = set()
+    for i in res:
+        usuarios_comentarios.add(i[0])
+        usuarios_comentarios.add(i[1])
 
     reclamacoes_por_usuario = (
         db_session.query(Reclamacao.usuario_id, func.count(Reclamacao.id))
@@ -130,7 +140,7 @@ def run():
     )
 
     pontos_por_usuario = {i: 0 for i in set_usuario}
-    
+        
     PONTOS_RECLAMACAO = int(getenv("PONTOS_RECLAMACAO"))
     PONTOS_COMENTARIO = int(getenv("PONTOS_COMENTARIO"))
     PONTOS_CURTIDA = int(getenv("PONTOS_CURTIDA"))
