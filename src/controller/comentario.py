@@ -22,6 +22,14 @@ class Comentario:
             db_session.add(comentario)
             db_session.flush()
             db_session.refresh(comentario)
+            reclamacao = (
+                db_session.query(ReclamacaoModel.usuario_id)
+                .filter(ReclamacaoModel.id == request_json["reclamacao"])
+                .one()
+            )
+            if reclamacao.usuario_id != request.token_id:
+                atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
+                atualizar_pontuacao(reclamacao.usuario_id, self.QTD_PONTOS, db_session)
             db_session.commit()
             comentario = (
                 db_session.query(
@@ -38,14 +46,6 @@ class Comentario:
                 )
                 .one()
             )
-            reclamacao = (
-                db_session.query(ReclamacaoModel.usuario_id)
-                .filter(ReclamacaoModel.id == request_json["reclamacao"])
-                .one()
-            )
-            if reclamacao.usuario_id != request.token_id:
-                atualizar_pontuacao(request.token_id, self.QTD_PONTOS, db_session)
-                atualizar_pontuacao(reclamacao.usuario_id, self.QTD_PONTOS, db_session)
             return self.comentario_json(comentario), 201
         except Exception as e:
             if "comentario_reclamacao_id_fkey" in e.orig.pgerror:
