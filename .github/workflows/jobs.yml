@@ -1,7 +1,10 @@
 name: midnight jobs
+
 on:
   schedule:
     - cron: "1 3 * * *"
+  workflow_dispatch:
+
 jobs:
   midnight:
     runs-on: ubuntu-latest
